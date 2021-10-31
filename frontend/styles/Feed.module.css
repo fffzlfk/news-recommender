@@ -1,0 +1,19 @@
+.post {
+  width: 700px;
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid black;
+}
+
+.post img {
+  width: 50%;
+}
+
+.post h1 {
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.none {
+  display: none;
+}

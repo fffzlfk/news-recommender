@@ -1,0 +1,17 @@
+.menu {
+    padding-top: 20%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 100px;
+    grid-auto-columns: 80px;
+    grid-column-gap: 100px;
+    grid-row-gap: 1em;
+}
+
+.menu div {
+    font: 2.2em sans-serif;
+}
+
+.none {
+    display: none;
+}

@@ -1,0 +1,13 @@
+app_name = "news-api"
+
+log_lelvel = "DEBUG"
+
+[pgsql]
+host = "192.168.1.104"
+user = "postgres"
+password = "001004"
+dbname = "news"
+
+[number]
+max_news_num_of_page = 10
+max_news_num_of_db = 300
