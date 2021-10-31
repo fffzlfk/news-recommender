@@ -8,17 +8,19 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	app.Post("/api/register", controllers.Register)
+	app.Post("/api/register", controllers.RegisterHandler)
 
-	app.Post("/api/login", controllers.Login)
+	app.Post("/api/login", controllers.LoginHandler)
 
-	app.Get("/api/user", controllers.User)
+	app.Use("/api", controllers.JwtAuthMiddleware())
 
-	app.Post("/api/logout", controllers.Logout)
+	app.Get("/api/user", controllers.UserHandler)
 
-	app.Get("/api/news/recommend", controllers.GetRecommendNews)
+	app.Post("/api/logout", controllers.LogoutHandler)
+
+	app.Get("/api/news/recommend", controllers.NewsRecommendHandler)
 
 	for _, category := range models.Categorys {
-		app.Get("/api/news/"+category, controllers.GetNewsControllerByCategory(category))
+		app.Get("/api/news/"+category, controllers.NewsHandlersByCategory(category))
 	}
 }

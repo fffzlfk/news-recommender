@@ -4,7 +4,6 @@ import (
 	"news-api/database"
 	"news-api/models"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/viper"
 )
@@ -15,26 +14,14 @@ func myinit() int {
 	return viper.GetInt("number.max_news_num_of_page")
 }
 
-func GetRecommendNews(c *fiber.Ctx) error {
+func NewsRecommendHandler(c *fiber.Ctx) error {
 	MaxNewsNumofPage = viper.GetInt("number.max_news_num_of_page")
-	cookie := c.Cookies("jwt")
-
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(SecretKey), nil
-	})
-
-	if err != nil {
-		c.Status(fiber.StatusUnauthorized)
-		return c.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
-
-	claims := token.Claims.(*jwt.StandardClaims)
+	id := c.Locals("id").(string)
 
 	var user models.User
 
-	if err := database.DB.Where("id = ?", claims.Issuer).First(&user).Error; err != nil {
+	res := database.DB.Where("id = ?", id).First(&user)
+	if res.Error != nil {
 		c.Status(fiber.ErrBadRequest.Code)
 		return c.JSON(fiber.Map{
 			"message": "unauthenticated",
@@ -65,26 +52,14 @@ func GetRecommendNews(c *fiber.Ctx) error {
 	return c.JSON(newsArr)
 }
 
-func GetNewsControllerByCategory(category string) fiber.Handler {
+func NewsHandlersByCategory(category string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		cookie := c.Cookies("jwt")
-
-		token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-			return []byte(SecretKey), nil
-		})
-
-		if err != nil {
-			c.Status(fiber.StatusUnauthorized)
-			return c.JSON(fiber.Map{
-				"message": "unauthenticated",
-			})
-		}
-
-		claims := token.Claims.(*jwt.StandardClaims)
+		id := c.Locals("id").(string)
 
 		var user models.User
 
-		if err := database.DB.Where("id = ?", claims.Issuer).First(&user).Error; err != nil {
+		res := database.DB.Where("id = ?", id).First(&user)
+		if res.Error != nil {
 			c.Status(fiber.ErrBadRequest.Code)
 			return c.JSON(fiber.Map{
 				"message": "unauthenticated",
@@ -99,6 +74,6 @@ func GetNewsControllerByCategory(category string) fiber.Handler {
 	}
 }
 
-func LikeNews(c *fiber.Ctx) error {
+func LikeNewsHandler(c *fiber.Ctx) error {
 	return nil
 }

@@ -13,7 +13,7 @@ import (
 
 const SecretKey = "secret"
 
-func Register(c *fiber.Ctx) error {
+func RegisterHandler(c *fiber.Ctx) error {
 	var data map[string]string
 
 	if err := c.BodyParser(&data); err != nil {
@@ -33,7 +33,7 @@ func Register(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
-func Login(c *fiber.Ctx) error {
+func LoginHandler(c *fiber.Ctx) error {
 	var data map[string]string
 
 	if err := c.BodyParser(&data); err != nil {
@@ -84,30 +84,46 @@ func Login(c *fiber.Ctx) error {
 	})
 }
 
-func User(c *fiber.Ctx) error {
-	cookie := c.Cookies("jwt")
+func JwtAuthMiddleware() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		cookie := c.Cookies("jwt")
 
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(SecretKey), nil
-	})
+		token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
+			return []byte(SecretKey), nil
+		})
 
-	if err != nil {
+		if err != nil {
+			c.Status(fiber.StatusUnauthorized)
+			return c.JSON(fiber.Map{
+				"message": "unauthenticated",
+			})
+		}
+
+		claims := token.Claims.(*jwt.StandardClaims)
+		id := claims.Issuer
+		c.Locals("id", id)
+
+		return c.Next()
+	}
+}
+
+func UserHandler(c *fiber.Ctx) error {
+	id := c.Locals("id").(string)
+
+	var user models.User
+
+	res := database.DB.Where("id = ?", id).First(&user)
+	if res.Error != nil {
 		c.Status(fiber.StatusUnauthorized)
 		return c.JSON(fiber.Map{
 			"message": "unauthenticated",
 		})
 	}
 
-	claims := token.Claims.(*jwt.StandardClaims)
-
-	var user models.User
-
-	database.DB.Where("id = ?", claims.Issuer).First(&user)
-
 	return c.JSON(user)
 }
 
-func Logout(c *fiber.Ctx) error {
+func LogoutHandler(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    "",
