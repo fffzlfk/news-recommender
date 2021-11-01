@@ -3,19 +3,15 @@ package controllers
 import (
 	"news-api/database"
 	"news-api/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/viper"
 )
 
-var MaxNewsNumofPage = myinit()
-
-func myinit() int {
-	return viper.GetInt("number.max_news_num_of_page")
-}
+var maxNewsNumofPage int = viper.GetInt("number.max_news_num_of_page")
 
 func NewsRecommendHandler(c *fiber.Ctx) error {
-	MaxNewsNumofPage = viper.GetInt("number.max_news_num_of_page")
 	id := c.Locals("id").(string)
 
 	var user models.User
@@ -30,7 +26,7 @@ func NewsRecommendHandler(c *fiber.Ctx) error {
 
 	newsMap := make(map[uint]models.News)
 
-	for i := 0; i < MaxNewsNumofPage; i++ {
+	for i := 0; i < maxNewsNumofPage; i++ {
 		category, err := user.GetANewsCategory()
 		if err != nil {
 			c.Status(fiber.StatusInternalServerError)
@@ -74,6 +70,78 @@ func NewsHandlersByCategory(category string) fiber.Handler {
 	}
 }
 
+func LikeStateHandler(c *fiber.Ctx) error {
+	var user models.User
+	userID := c.Locals("id").(string)
+	intUserID, _ := strconv.Atoi(userID)
+	user.Id = uint(intUserID)
+
+	var news models.News
+
+	newsID := c.Query("news_id")
+	intNewsID, _ := strconv.Atoi(newsID)
+	news.Id = uint(intNewsID)
+
+	cnt := database.DB.Model(&news).Association("BeLikedBy").Count()
+
+	database.DB.Model(&user).Association("LikedNews").Find(&user.LikedNews, []int{int(news.Id)})
+
+	state := false
+	if len(user.LikedNews) == 1 {
+		state = true
+	}
+
+	return c.JSON(fiber.Map{
+		"count": cnt,
+		"state": state,
+	})
+}
+
 func LikeNewsHandler(c *fiber.Ctx) error {
-	return nil
+	userID := c.Locals("id").(string)
+	var user models.User
+	res := database.DB.Where("id = ?", userID).First(&user)
+	if res.Error != nil {
+		c.Status(fiber.ErrBadRequest.Code)
+		return c.JSON(fiber.Map{
+			"message": res.Error.Error(),
+		})
+	}
+
+	newsID := c.Query("news_id")
+	var news models.News
+	res = database.DB.Where("id = ?", newsID).First(&news)
+	if res.Error != nil {
+		c.Status(fiber.ErrBadRequest.Code)
+		return c.JSON(fiber.Map{
+			"message": res.Error.Error(),
+		})
+	}
+
+	action := c.Query("action")
+
+	var err error
+	if action == "do" {
+		user.LikeNews(&news, true)
+		err = database.DB.Model(&user).Association("LikedNews").Append([]*models.News{&news})
+	} else if action == "undo" {
+		user.LikeNews(&news, false)
+		err = database.DB.Model(&user).Association("LikedNews").Delete([]*models.News{&news})
+	} else {
+		c.Status(fiber.ErrBadRequest.Code)
+		return c.JSON(fiber.Map{
+			"message": "param action is invalid",
+		})
+	}
+
+	if err != nil {
+		c.Status(fiber.ErrBadRequest.Code)
+		return c.JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
 }

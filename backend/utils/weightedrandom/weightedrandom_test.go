@@ -5,7 +5,7 @@ import (
 )
 
 func TestDo(t *testing.T) {
-	wrc, err := NewChooser(map[string]uint{
+	wrc, err := NewChooser(map[string]int{
 		"business":      1,
 		"entertainment": 1,
 		"general":       1,

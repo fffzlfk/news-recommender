@@ -11,3 +11,4 @@ dbname = "news"
 [number]
 max_news_num_of_page = 10
 max_news_num_of_db = 300
+increasement = 5

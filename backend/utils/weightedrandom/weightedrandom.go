@@ -10,10 +10,10 @@ import (
 
 type Choice struct {
 	Item   string
-	Weight uint
+	Weight int
 }
 
-func NewChoice(item string, weight uint) Choice {
+func NewChoice(item string, weight int) Choice {
 	return Choice{Item: item, Weight: weight}
 }
 
@@ -26,7 +26,7 @@ type Chooser struct {
 var errWeightOverflow = errors.New("sum of Choice Weigths extends max int")
 var errNoValidChoices = errors.New("zero Choices with Weight >= 1")
 
-func NewChooser(choicesMap map[string]uint) (*Chooser, error) {
+func NewChooser(choicesMap map[string]int) (*Chooser, error) {
 	choices := make([]Choice, 0, len(choicesMap))
 
 	for k, v := range choicesMap {

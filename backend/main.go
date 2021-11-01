@@ -1,26 +1,16 @@
 package main
 
 import (
-	"log"
+	"news-api/config"
 	"news-api/database"
 	"news-api/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/spf13/viper"
 )
 
-func init() {
-	viper.SetConfigName("config.toml")
-	viper.SetConfigType("toml")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalf("read config failed: %v", err)
-	}
-}
-
 func main() {
+	config.Init()
 	database.Connect()
 
 	app := fiber.New()
