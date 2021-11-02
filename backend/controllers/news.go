@@ -1,15 +1,16 @@
 package controllers
 
 import (
+	"news-api/config"
 	"news-api/database"
 	"news-api/models"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
-var maxNewsNumofPage int = viper.GetInt("number.max_news_num_of_page")
+var maxNewsNumofPage int = config.MaxNewsNumofPage
 
 func NewsRecommendHandler(c *fiber.Ctx) error {
 	id := c.Locals("id").(string)
@@ -82,7 +83,8 @@ func LikeStateHandler(c *fiber.Ctx) error {
 	intNewsID, _ := strconv.Atoi(newsID)
 	news.Id = uint(intNewsID)
 
-	cnt := database.DB.Model(&news).Association("BeLikedBy").Count()
+	var cnt int
+	database.DB.Raw(`SELECT count(*) FROM "users_news" WHERE "news_id"= ?`, news.Id).Scan(&cnt)
 
 	database.DB.Model(&user).Association("LikedNews").Find(&user.LikedNews, []int{int(news.Id)})
 
@@ -120,13 +122,17 @@ func LikeNewsHandler(c *fiber.Ctx) error {
 
 	action := c.Query("action")
 
+	column := "vis_" + news.Category
+
 	var err error
 	if action == "do" {
-		user.LikeNews(&news, true)
-		err = database.DB.Model(&user).Association("LikedNews").Append([]*models.News{&news})
+		database.DB.Model(&user).Update(column, gorm.Expr(column+" + ?", config.Increasement))
+
+		err = database.DB.Model(&user).Association("LikedNews").Append(&news)
 	} else if action == "undo" {
-		user.LikeNews(&news, false)
-		err = database.DB.Model(&user).Association("LikedNews").Delete([]*models.News{&news})
+		database.DB.Model(&user).Update(column, gorm.Expr(column+" - ?", config.Increasement))
+
+		err = database.DB.Model(&user).Association("LikedNews").Delete(&news)
 	} else {
 		c.Status(fiber.ErrBadRequest.Code)
 		return c.JSON(fiber.Map{

@@ -9,7 +9,7 @@ type News struct {
 	Category    string `json:"category"`
 	CreatedAt   int64  `json:"created_at"`
 
-	BeLikedBy []User `gorm:"many2many:users_news"`
+	BeLikedBy []*User `gorm:"many2many:users_news"`
 }
 
 var Categorys = []string{"business", "entertainment", "general",

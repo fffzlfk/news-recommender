@@ -1,10 +1,7 @@
 package models
 
 import (
-	"errors"
 	"news-api/utils/weightedrandom"
-
-	"github.com/spf13/viper"
 )
 
 type User struct {
@@ -20,7 +17,7 @@ type User struct {
 	VisSports        int    `json:"vis_sports" gorm:"default:1"`
 	VisTechnology    int    `json:"vis_technology" gorm:"default:1"`
 
-	LikedNews []News `gorm:"many2many:users_news"`
+	LikedNews []*News `gorm:"many2many:users_news"`
 }
 
 func (user *User) GetANewsCategory() (string, error) {
@@ -39,35 +36,4 @@ func (user *User) GetANewsCategory() (string, error) {
 
 	result := wrc.Pick()
 	return result, nil
-}
-
-var increasement int = viper.GetInt("number.increasement")
-
-func (user *User) LikeNews(news *News, do bool) error {
-	var inc int
-	if do {
-		inc = int(increasement)
-	} else {
-		inc = -int(increasement)
-	}
-	switch news.Category {
-	case "business":
-		user.VisBusiness += inc
-	case "entertainment":
-		user.VisEntertainment += inc
-	case "general":
-		user.VisGeneral += inc
-	case "health":
-		user.VisEntertainment += inc
-	case "science":
-		user.VisScience += inc
-	case "sports":
-		user.VisSports += inc
-	case "technology":
-		user.VisTechnology += inc
-	default:
-		return errors.New("news's category invalid")
-	}
-
-	return nil
 }

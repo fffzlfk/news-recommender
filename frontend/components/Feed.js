@@ -3,29 +3,12 @@ import Head from 'next/head';
 import { useEffect, useState } from "react";
 
 
-export default function Feed({ item }) {
-    const [like, setLike] = useState(false);
-    const [count, setCount] = useState(0);
-
+export default function Feed({ item, like }) {
+    const [likeState, setLikeState] = useState(like.state);
+    const [count, setCount] = useState(like.count);
     useEffect(() => {
-        const fetchData = async () => {
-            const data = await fetch(`http://localhost:8000/api/like/get?news_id=${item.id}`, {
-                method: 'GET',
-                mdoe: 'cors',
-                credentials: 'include',
-            })
-                .then(res => res.json())
-                .catch(e => console.log('错误:', e));
+        const action = likeState ? "undo" : "do";
 
-            setCount(data.count);
-            setLike(data.state);
-        }
-
-        fetchData();
-    }, [like]);
-
-    const handler = () => {
-        const action = like ? "undo" : "do";
         const fetchData = async () => {
             await fetch(`http://localhost:8000/api/like/action?news_id=${item.id}&action=${action}`, {
                 method: 'GET',
@@ -33,14 +16,11 @@ export default function Feed({ item }) {
                 credentials: 'include',
             })
                 .then(res => res.json())
-                .then(data => {
-                    console.log(data);
-                })
                 .catch(e => console.log('错误:', e));
         }
         fetchData();
-        setLike(!like);
-    }
+        setLikeState(!likeState);
+    }, [count]);
 
     return (
         <div className={styles.post}>
@@ -56,7 +36,10 @@ export default function Feed({ item }) {
             <img className={`${isValidImgSrc(item.url_to_image) ? styles.post.img : styles.none}`} src={item.url_to_image} alt="NewsImage" />
             <br />
             <p>{count}</p>
-            <button onClick={() => handler()}>点赞</button>
+            <button
+                onClick={() => setCount(likeState ? count + 1 : count - 1)}>
+                点赞
+            </button>
         </div>
     )
 }

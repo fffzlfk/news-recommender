@@ -1,13 +1,8 @@
 import Feed from "../../components/Feed";
-import Error from 'next/error'
 import Layout from "../../layouts/Layout";
 
-export default function Recommend({ articles, errorCode }) {
-    if (errorCode) {
-        return <Error statusCode={errorCode} />
-    }
-
-    const items = articles.map(item => <li key={item.id}> <Feed item={item} /> </li>);
+export default function Recommend({ articles, likes }) {
+    const items = articles.map((item, index) => <li key={item.id}> <Feed item={item} like={likes[index]} /> </li>);
 
     return (
         <Layout auth={true}>
@@ -24,9 +19,20 @@ export async function getServerSideProps(ctx) {
         headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined
     });
 
-    const errorCode = resp.ok ? false : resp.statusCode;
-
     const articles = await resp.json();
 
-    return { props: { articles, errorCode } };
+    const fetchLike = async (id) => {
+        return await fetch(`http://localhost:8000/api/like/get?news_id=${id}`, {
+            method: 'GET',
+            mdoe: 'cors',
+            credentials: 'include',
+            headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined
+        })
+            .then(resp => resp.json())
+            .catch(e => console.log('错误:', e));
+    }
+
+    const likes = await Promise.all(articles.map(item => fetchLike(item.id)));
+
+    return { props: { articles, likes } };
 }
