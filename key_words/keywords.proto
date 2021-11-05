@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package keywords;
+
+service Greeter {
+    rpc GetKeywords(GetKeywordsReq) returns (GetKeywordsResp) {}
+}
+
+message GetKeywordsReq {
+    string title = 1;
+}
+
+message GetKeywordsResp {
+    repeated Item keywords = 1;
+}
+message Item {
+    string word = 1;
+    float weight = 2;
+} 

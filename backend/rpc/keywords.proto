@@ -1,0 +1,25 @@
+// [python quickstart](https://grpc.io/docs/quickstart/python.html#run-a-grpc-application)
+// python -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. hello.proto
+
+// helloworld.proto
+syntax = "proto3";
+
+option go_package="./;rpc";
+
+package keywords;
+
+service Greeter {
+    rpc GetKeywords(GetKeywordsReq) returns (GetKeywordsResp) {}
+}
+
+message GetKeywordsReq {
+    string title = 1;
+}
+
+message GetKeywordsResp {
+    repeated Item keywords = 1;
+}
+message Item {
+    string word = 1;
+    float weight = 2;
+} 
