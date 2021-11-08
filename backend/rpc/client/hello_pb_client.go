@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"news-api/rpc" //对应的生成文件目录
+	"news-api/utils/similarity"
 
 	"google.golang.org/grpc"
 )
@@ -19,12 +20,24 @@ func main() {
 	defer conn.Close()
 	// 创建Waiter服务的客户端
 	t := rpc.NewGreeterClient(conn)
-	resp, err := t.GetKeywords(context.Background(), &rpc.GetKeywordsReq{Title: "全球征集超2700件作品近150个网络平台播出成都大运会发出“青春的邀约” | 每经网 - 每日经济新闻"})
+	respA, err := t.GetKeywords(context.Background(), &rpc.GetKeywordsReq{Title: "习近平：以共同但有区别的责任原则为基石，全面有效落实《联合国气候变化框架公约》及其《巴黎协定》 | 每经网 - 每日经济新闻"})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	kws := resp.Keywords
-	for _, kw := range kws {
-		fmt.Printf("(%v, %v)\n", kw.Word, kw.Weight)
+	respB, err := t.GetKeywords(context.Background(), &rpc.GetKeywordsReq{Title: "中疾控专家：儿童接种新冠疫苗后要留观30分钟，避免剧烈运动_新华报业网 - 新华报业网"})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
 	}
+
+	mpA := make(map[string]float32)
+	for _, kw := range respA.Keywords {
+		mpA[kw.Word] = kw.Weight
+	}
+
+	mpB := make(map[string]float32)
+	for _, kw := range respB.Keywords {
+		mpB[kw.Word] = kw.Weight
+	}
+
+	fmt.Println(similarity.Sim(mpA, mpB))
 }

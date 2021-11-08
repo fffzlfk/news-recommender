@@ -12,7 +12,6 @@ import codecs
 class Greeter(keywords_pb2_grpc.GreeterServicer):
     # 实现 proto 文件中定义的 rpc 调用
     def GetKeywords(self, request, context):
-
         return keywords_pb2.GetKeywordsResp(keywords=get_keywords(request.title))
 
 
@@ -37,6 +36,8 @@ def serve():
     keywords_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port('[::]:50052')
     server.start()
+    print('INFO: server started')
+
     try:
         while True:
             time.sleep(60*60*24)  # one day in seconds
