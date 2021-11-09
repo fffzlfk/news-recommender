@@ -17,3 +17,10 @@
 .none {
   display: none;
 }
+
+.btn {
+  border-radius: 10%;
+  margin-top: 2%;
+  background-color: #cf6066;
+  border-color: #cf6066;
+}

@@ -36,10 +36,9 @@ export default function Feed({ item, like }) {
             <p >{item.description}</p>
             <img className={`${isValidImgSrc(item.url_to_image) ? styles.post.img : styles.none}`} src={item.url_to_image} alt="NewsImage" />
             <br />
-            <p>{likeState ? "1" : "0"}</p>
-            <button
+            <button className={styles.btn}
                 onClick={(e) => handleClick(e)}>
-                点赞
+                {likeState ? "取消点赞": "点赞" }
             </button>
         </div>
     )
