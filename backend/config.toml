@@ -3,7 +3,7 @@ app_name = "news-api"
 log_lelvel = "DEBUG"
 
 [pgsql]
-host = "192.168.1.104"
+host = "localhost"
 user = "postgres"
 password = "001004"
 dbname = "news"

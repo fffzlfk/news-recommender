@@ -1,12 +1,13 @@
 import styles from "./../styles/Feed.module.css";
 import Head from 'next/head';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 export default function Feed({ item, like }) {
     const [likeState, setLikeState] = useState(like.state);
-    const [count, setCount] = useState(like.count);
-    useEffect(() => {
+
+    const handleClick = (e) => {
+        e.preventDefault();
         const action = likeState ? "undo" : "do";
 
         const fetchData = async () => {
@@ -20,7 +21,7 @@ export default function Feed({ item, like }) {
         }
         fetchData();
         setLikeState(!likeState);
-    }, [count]);
+    }
 
     return (
         <div className={styles.post}>
@@ -35,9 +36,9 @@ export default function Feed({ item, like }) {
             <p >{item.description}</p>
             <img className={`${isValidImgSrc(item.url_to_image) ? styles.post.img : styles.none}`} src={item.url_to_image} alt="NewsImage" />
             <br />
-            <p>{count}</p>
+            <p>{likeState ? "1" : "0"}</p>
             <button
-                onClick={() => setCount(likeState ? count + 1 : count - 1)}>
+                onClick={(e) => handleClick(e)}>
                 点赞
             </button>
         </div>

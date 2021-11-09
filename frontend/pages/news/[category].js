@@ -1,8 +1,8 @@
 import Feed from "../../components/Feed";
 import Layout from "../../layouts/Layout";
 
-export default function Recommend({ articles, likes }) {
-    const items = articles.map((item, index) => <li key={item.id}> <Feed item={item} like={likes[index]} /> </li>);
+export default function Recommend({ articles, states }) {
+    const items = articles.map((item, index) => <li key={item.id}> <Feed item={item} like={states[index]} /> </li>);
 
     return (
         <Layout auth={true}>
@@ -32,7 +32,7 @@ export async function getServerSideProps(ctx) {
             .catch(e => console.log('错误:', e));
     }
 
-    const likes = await Promise.all(articles.map(item => fetchLike(item.id)));
+    const states = await Promise.all(articles.map(item => fetchLike(item.id)));
 
-    return { props: { articles, likes } };
+    return { props: { articles, states } };
 }

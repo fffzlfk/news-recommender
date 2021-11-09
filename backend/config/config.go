@@ -6,10 +6,23 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	MaxNewsNumofPage int
+	MaxNewsNumofDB   int64
+	Increasement     int
+)
+
+var (
+	Host     string
+	User     string
+	Password string
+	DBName   string
+)
+
 func Init() {
 	viper.SetConfigName("config.toml")
 	viper.SetConfigType("toml")
-	viper.AddConfigPath("/home/fffzlfk/github/news/backend")
+	viper.AddConfigPath("./")
 	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatalf("read config failed: %v", err)
@@ -27,16 +40,3 @@ func Init() {
 		DBName = viper.GetString("pgsql.dbname")
 	}
 }
-
-var (
-	MaxNewsNumofPage int
-	MaxNewsNumofDB   int64
-	Increasement     int
-)
-
-var (
-	Host     string
-	User     string
-	Password string
-	DBName   string
-)

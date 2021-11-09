@@ -1,13 +1,14 @@
 package controllers
 
 import (
+	"log"
 	"news-api/config"
 	"news-api/database"
 	"news-api/models"
+	"news-api/utils/similarity"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
 var maxNewsNumofPage int = config.MaxNewsNumofPage
@@ -25,29 +26,37 @@ func NewsRecommendHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	newsMap := make(map[uint]models.News)
-
-	for i := 0; i < maxNewsNumofPage; i++ {
-		category, err := user.GetANewsCategory()
-		if err != nil {
-			c.Status(fiber.StatusInternalServerError)
-			return c.JSON(fiber.Map{
-				"message": "internal server error",
-			})
-		}
-		var news models.News
-		database.DB.Where("category = ?", category).First(&news)
-		newsMap[news.Id] = news
+	var data []models.News
+	if err := database.DB.Model(&user).Association("RecommendNews").Find(&data); err != nil {
+		c.Status(fiber.StatusInternalServerError)
+		return c.JSON(fiber.Map{
+			"message": "internal server error",
+		})
 	}
 
-	newsArr := make([]models.News, 0, len(newsMap))
-
-	for _, v := range newsMap {
-		newsArr = append(newsArr, v)
-	}
-
-	return c.JSON(newsArr)
+	return c.JSON(data)
 }
+
+func updateRecommendList(user models.User) error {
+	database.DB.Model(&user).Association("LikedNews").Find(&user.LikedNews)
+	if len(user.LikedNews) == 0 {
+		todo()
+	}
+
+	var allNews []models.News
+	database.DB.Model(&models.News{}).Find(&allNews).Order("created_at DESC").Limit(100)
+
+	data := make([]models.News, 0)
+
+	for _, likedNews := range user.LikedNews {
+		r := similarity.NewRecommend(*likedNews)
+		data = append(data, r.SimOrderNews(allNews)...)
+	}
+
+	return database.DB.Model(&user).Association("RecommendNews").Replace(data)
+}
+
+func todo() {}
 
 func NewsHandlersByCategory(category string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -83,9 +92,6 @@ func LikeStateHandler(c *fiber.Ctx) error {
 	intNewsID, _ := strconv.Atoi(newsID)
 	news.Id = uint(intNewsID)
 
-	var cnt int
-	database.DB.Raw(`SELECT count(*) FROM "users_news" WHERE "news_id"= ?`, news.Id).Scan(&cnt)
-
 	database.DB.Model(&user).Association("LikedNews").Find(&user.LikedNews, []int{int(news.Id)})
 
 	state := false
@@ -94,7 +100,6 @@ func LikeStateHandler(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"count": cnt,
 		"state": state,
 	})
 }
@@ -122,16 +127,10 @@ func LikeNewsHandler(c *fiber.Ctx) error {
 
 	action := c.Query("action")
 
-	column := "vis_" + news.Category
-
 	var err error
 	if action == "do" {
-		database.DB.Model(&user).Update(column, gorm.Expr(column+" + ?", config.Increasement))
-
 		err = database.DB.Model(&user).Association("LikedNews").Append(&news)
 	} else if action == "undo" {
-		database.DB.Model(&user).Update(column, gorm.Expr(column+" - ?", config.Increasement))
-
 		err = database.DB.Model(&user).Association("LikedNews").Delete(&news)
 	} else {
 		c.Status(fiber.ErrBadRequest.Code)
@@ -146,6 +145,12 @@ func LikeNewsHandler(c *fiber.Ctx) error {
 			"message": err.Error(),
 		})
 	}
+
+	go func(user models.User) {
+		if err := updateRecommendList(user); err != nil {
+			log.Println(err)
+		}
+	}(user)
 
 	return c.JSON(fiber.Map{
 		"message": "success",

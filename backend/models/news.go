@@ -7,9 +7,9 @@ type News struct {
 	Url         string `json:"url" gorm:"UNIQUE"`
 	UrlToImage  string `json:"url_to_image"`
 	Category    string `json:"category"`
+	Source      string `json:"source"`
+	Author      string `json:"author"`
 	CreatedAt   int64  `json:"created_at"`
-
-	BeLikedBy []*User `gorm:"many2many:users_news"`
 }
 
 var Categorys = []string{"business", "entertainment", "general",

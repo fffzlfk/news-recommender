@@ -36,6 +36,8 @@ func crawlNew() {
 				Url:         art.URL,
 				UrlToImage:  art.URLToImage,
 				Category:    category,
+				Source:      art.Source.ID,
+				Author:      art.Author,
 				CreatedAt:   time.Now().Unix(),
 			}
 			DB.Create(&news)
