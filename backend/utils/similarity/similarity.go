@@ -6,16 +6,19 @@ import (
 	"sort"
 )
 
-type Recommend struct {
-	mother    models.News
-	motherMap map[string]float32
+type Recommender struct {
+	recentNews map[uint]map[string]float32
 }
 
-func NewRecommend(mother models.News) *Recommend {
+func NewRecommender(recentnews []models.News) *Recommender {
 	client.Dial()
-	return &Recommend{
-		mother:    mother,
-		motherMap: client.GetKeywords(mother.Title),
+
+	mp := make(map[uint]map[string]float32)
+	for _, news := range recentnews {
+		mp[news.ID] = client.GetKeywords(news.Title)
+	}
+	return &Recommender{
+		recentNews: mp,
 	}
 }
 
@@ -26,27 +29,31 @@ func titleMatchValue(mpA, mpB map[string]float32) (value float32) {
 	return
 }
 
-func (r *Recommend) newsMatchValue(news models.News) (value float32) {
-	if r.mother.Category == news.Category {
+func (r *Recommender) newsMatchValue(mother, news models.News, motherMap map[string]float32) (value float32) {
+	if mother.Category == news.Category {
 		value += 5.0
 	}
 
-	value += titleMatchValue(r.motherMap, client.GetKeywords(news.Title))
+	value += titleMatchValue(motherMap, r.recentNews[news.ID])
 
-	if r.mother.Author == news.Author {
+	if mother.Author == news.Author {
 		value += 3.0
 	}
 
 	return
 }
 
-func (r *Recommend) SimOrderNews(news []models.News) []models.News {
+func (r *Recommender) SimOrderNews(mother models.News, news []models.News) []models.News {
+
+	motherMap := client.GetKeywords(mother.Title)
 
 	sort.Slice(news, func(i, j int) bool {
-		return r.newsMatchValue(news[i]) > r.newsMatchValue(news[j])
+		return r.newsMatchValue(mother, news[i], motherMap) > r.newsMatchValue(mother, news[j], motherMap)
 	})
 
-	client.Close()
-
 	return news[:10]
+}
+
+func (r *Recommender) Close() {
+	client.Close()
 }

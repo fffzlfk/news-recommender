@@ -18,9 +18,16 @@
   display: none;
 }
 
-.btn {
+.btn_liked {
   border-radius: 10%;
   margin-top: 2%;
   background-color: #cf6066;
   border-color: #cf6066;
+}
+
+.btn_unliked {
+  border-radius: 10%;
+  margin-top: 2%;
+  background-color: #5964f3;
+  border-color: #5964f3;;
 }

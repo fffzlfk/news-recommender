@@ -6,7 +6,7 @@ log_lelvel = "DEBUG"
 host = "localhost"
 user = "postgres"
 password = "001004"
-dbname = "news"
+dbname = "news_recommend"
 
 [number]
 max_news_num_of_page = 10

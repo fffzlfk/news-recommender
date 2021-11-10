@@ -1,7 +1,7 @@
 package models
 
 type News struct {
-	Id          uint   `json:"id"`
+	ID          uint   `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Url         string `json:"url" gorm:"UNIQUE"`

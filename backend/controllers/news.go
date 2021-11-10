@@ -7,11 +7,14 @@ import (
 	"news-api/models"
 	"news-api/utils/similarity"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 var maxNewsNumofPage int = config.MaxNewsNumofPage
+
+const maxMotherNews = 10
 
 func NewsRecommendHandler(c *fiber.Ctx) error {
 	id := c.Locals("id").(string)
@@ -27,36 +30,46 @@ func NewsRecommendHandler(c *fiber.Ctx) error {
 	}
 
 	var data []models.News
-	if err := database.DB.Model(&user).Association("RecommendNews").Find(&data); err != nil {
+	if err := database.DB.Limit(maxNewsNumofPage).Model(&user).Association("RecommendNews").Find(&data); err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{
 			"message": "internal server error",
 		})
 	}
 
+	if len(data) == 0 {
+		NewsHandlersByCategory("general")(c)
+		return nil
+	}
+
 	return c.JSON(data)
 }
 
 func updateRecommendList(user models.User) error {
-	database.DB.Model(&user).Association("LikedNews").Find(&user.LikedNews)
-	if len(user.LikedNews) == 0 {
-		todo()
+	err := database.DB.Raw(
+		"SELECT news.* FROM news INNER JOIN liked_news ON news.id=liked_news.news_id WHERE liked_news.user_id=? ORDER BY liked_news.liked_at DESC LIMIT ?",
+		user.ID, maxMotherNews).Find(&user.LikedNews).Error
+	if err != nil {
+		panic(err.Error)
 	}
 
-	var allNews []models.News
-	database.DB.Model(&models.News{}).Find(&allNews).Order("created_at DESC").Limit(100)
+	if len(user.LikedNews) == 0 {
+		return nil
+	}
+
+	var recentNews []models.News
+	database.DB.Model(&models.News{}).Find(&recentNews).Order("created_at DESC").Limit(100)
+
+	r := similarity.NewRecommender(recentNews)
+	defer r.Close()
 
 	data := make([]models.News, 0)
-
 	for _, likedNews := range user.LikedNews {
-		r := similarity.NewRecommend(*likedNews)
-		data = append(data, r.SimOrderNews(allNews)...)
+		data = append(data, r.SimOrderNews(likedNews, recentNews)...)
 	}
 
 	return database.DB.Model(&user).Association("RecommendNews").Replace(data)
 }
-
-func todo() {}
 
 func NewsHandlersByCategory(category string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -84,15 +97,15 @@ func LikeStateHandler(c *fiber.Ctx) error {
 	var user models.User
 	userID := c.Locals("id").(string)
 	intUserID, _ := strconv.Atoi(userID)
-	user.Id = uint(intUserID)
+	user.ID = uint(intUserID)
 
 	var news models.News
 
 	newsID := c.Query("news_id")
 	intNewsID, _ := strconv.Atoi(newsID)
-	news.Id = uint(intNewsID)
+	news.ID = uint(intNewsID)
 
-	database.DB.Model(&user).Association("LikedNews").Find(&user.LikedNews, []int{int(news.Id)})
+	database.DB.Model(&user).Association("LikedNews").Find(&user.LikedNews, []int{int(news.ID)})
 
 	state := false
 	if len(user.LikedNews) == 1 {
@@ -129,7 +142,11 @@ func LikeNewsHandler(c *fiber.Ctx) error {
 
 	var err error
 	if action == "do" {
-		err = database.DB.Model(&user).Association("LikedNews").Append(&news)
+		database.DB.Create(&models.LikedNews{
+			UserID:  user.ID,
+			NewsID:  news.ID,
+			LikedAt: time.Now().Unix(),
+		})
 	} else if action == "undo" {
 		err = database.DB.Model(&user).Association("LikedNews").Delete(&news)
 	} else {

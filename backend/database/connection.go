@@ -26,6 +26,7 @@ func Connect() {
 	}
 	DB = conn
 
+	conn.SetupJoinTable(&models.User{}, "LikedNews", &models.LikedNews{})
 	conn.AutoMigrate(models.User{})
 	conn.AutoMigrate(models.News{})
 
