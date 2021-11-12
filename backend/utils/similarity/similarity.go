@@ -36,8 +36,12 @@ func (r *Recommender) newsMatchValue(mother, news models.News, motherMap map[str
 
 	value += titleMatchValue(motherMap, r.recentNews[news.ID])
 
+	if mother.Source == news.Source {
+		value += 1.5
+	}
+
 	if mother.Author == news.Author {
-		value += 3.0
+		value += 1.5
 	}
 
 	return
