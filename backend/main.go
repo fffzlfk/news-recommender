@@ -2,6 +2,7 @@ package main
 
 import (
 	"news-api/config"
+	"news-api/cron"
 	"news-api/database"
 	"news-api/routes"
 
@@ -13,6 +14,8 @@ func main() {
 	config.Init()
 
 	database.Connect()
+
+	cron.Start()
 
 	app := fiber.New()
 
