@@ -50,7 +50,7 @@ func updateRecommendList(user models.User) error {
 		"SELECT news.* FROM news INNER JOIN liked_news ON news.id=liked_news.news_id WHERE liked_news.user_id=? ORDER BY liked_news.liked_at DESC LIMIT ?",
 		user.ID, maxMotherNews).Find(&user.LikedNews).Error
 	if err != nil {
-		panic(err.Error)
+		panic(err)
 	}
 
 	if len(user.LikedNews) == 0 {
@@ -60,8 +60,8 @@ func updateRecommendList(user models.User) error {
 	var recentNews []models.News
 	database.DB.Model(&models.News{}).Find(&recentNews).Order("created_at DESC").Limit(100)
 
-	r := similarity.NewRecommender(recentNews)
-	defer r.Close()
+	r, closeFunc := similarity.NewRecommender(recentNews)
+	defer closeFunc()
 
 	data := make([]models.News, 0)
 	for _, likedNews := range user.LikedNews {

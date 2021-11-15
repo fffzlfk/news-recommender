@@ -8,27 +8,34 @@ import (
 	"google.golang.org/grpc"
 )
 
-var conn *grpc.ClientConn
-var t rpc.GreeterClient
+type Client struct {
+	gc rpc.GreeterClient
+}
 
-func Dial() {
+// var conn *grpc.ClientConn
+// var gc rpc.GreeterClient
+
+func NewClient() (*Client, func()) {
 	// 建立连接到gRPC服务
-	var err error
-	conn, err = grpc.Dial("127.0.0.1:50052", grpc.WithInsecure())
+	conn, err := grpc.Dial("127.0.0.1:50052", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
+
+	closeFunc := func() {
+		conn.Close()
+	}
+
 	// 创建Waiter服务的客户端
-	t = rpc.NewGreeterClient(conn)
+	gc := rpc.NewGreeterClient(conn)
+
+	return &Client{
+		gc: gc,
+	}, closeFunc
 }
 
-func Close() {
-	// 函数结束时关闭连接
-	conn.Close()
-}
-
-func GetKeywords(title string) map[string]float32 {
-	resp, err := t.GetKeywords(context.Background(), &rpc.GetKeywordsReq{Title: title})
+func (c *Client) GetKeywords(title string) map[string]float32 {
+	resp, err := c.gc.GetKeywords(context.Background(), &rpc.GetKeywordsReq{Title: title})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}

@@ -1,0 +1,31 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    image: backend
+    container_name: backend
+    network_mode: "host"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - key_words
+
+  frontend:
+    build: ./frontend
+    image: frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  key-words:
+    build: ./key_words
+    image: key_words
+    container_name: key_words
+    ports:
+      - "50052:50052"
+
+networks:
+    product_service_network:
+        driver: bridge
