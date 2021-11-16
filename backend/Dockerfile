@@ -10,7 +10,6 @@ WORKDIR /backend
 
 RUN go env -w GOPROXY=https://goproxy.cn
 
-
 RUN go build
 
 EXPOSE 8000
