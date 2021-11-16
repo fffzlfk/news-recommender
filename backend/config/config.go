@@ -6,18 +6,22 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	MaxNewsNumofPage int
-	MaxNewsNumofDB   int64
-	Increasement     int
-)
+type Configurations struct {
+	Database DatabaseConfigurations `mapstructure:"pgsql"`
+	Numbers  NumbersConfigurations  `mapstructure:"numbers"`
+}
 
-var (
+type DatabaseConfigurations struct {
 	Host     string
 	User     string
 	Password string
 	DBName   string
-)
+}
+
+type NumbersConfigurations struct {
+	PageSize       int   `mapstructure:"page_size"`
+	MaxNewsNumofDB int64 `mapstructure:"max_news_num_of_db"`
+}
 
 func Init() {
 	viper.SetConfigName("config.toml")
@@ -27,16 +31,34 @@ func Init() {
 	if err != nil {
 		log.Fatalf("read config failed: %v", err)
 	}
-	{
-		MaxNewsNumofPage = viper.GetInt("number.max_news_num_of_page")
-		MaxNewsNumofDB = viper.GetInt64("number.max_news_num_of_db")
-		Increasement = viper.GetInt("number.increasement")
+}
+
+func GetDatabaseConfigurations() DatabaseConfigurations {
+	var c Configurations
+	err := viper.Unmarshal(&c)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return c.Database
+}
+
+func GetPageSize() int {
+	Init()
+	var c Configurations
+	err := viper.Unmarshal(&c)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	{
-		Host = viper.GetString("pgsql.host")
-		User = viper.GetString("pgsql.user")
-		Password = viper.GetString("pgsql.password")
-		DBName = viper.GetString("pgsql.dbname")
+	return c.Numbers.PageSize
+}
+
+func GetMaxNewsNumofDB() int64 {
+	Init()
+	var c Configurations
+	err := viper.Unmarshal(&c)
+	if err != nil {
+		log.Fatal(err)
 	}
+	return int64(c.Numbers.MaxNewsNumofDB)
 }

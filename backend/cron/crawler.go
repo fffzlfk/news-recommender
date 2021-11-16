@@ -17,7 +17,7 @@ const apiKey = "d1f4a490e88f467ab34c822443df7b32"
 func addNews() {
 	var cnt int64
 	database.DB.Model(models.News{}).Count(&cnt)
-	if cnt < config.MaxNewsNumofDB {
+	if cnt < config.GetMaxNewsNumofDB() {
 		crawlNews()
 	}
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-var maxNewsNumofPage int = config.MaxNewsNumofPage
+var pageSize int = config.GetPageSize()
 
 const maxMotherNews = 10
 
@@ -29,8 +29,14 @@ func NewsRecommendHandler(c *fiber.Ctx) error {
 		})
 	}
 
+	pageIndexStr := c.Query("page", "1")
+	pageIndex, _ := strconv.ParseInt(pageIndexStr, 10, 64)
+
+	total := database.DB.Model(&user).Association("RecommendNews").Count()
+	pageNum := (total + int64(pageSize) - 1) / int64(pageSize)
+
 	var data []models.News
-	if err := database.DB.Limit(maxNewsNumofPage).Model(&user).Association("RecommendNews").Find(&data); err != nil {
+	if err := database.DB.Offset(int(pageIndex-1) * pageSize).Limit(pageSize).Model(&user).Association("RecommendNews").Find(&data); err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{
 			"message": "internal server error",
@@ -42,7 +48,10 @@ func NewsRecommendHandler(c *fiber.Ctx) error {
 		return nil
 	}
 
-	return c.JSON(data)
+	return c.JSON(fiber.Map{
+		"data":     data,
+		"page_num": pageNum,
+	})
 }
 
 func updateRecommendList(user models.User) error {
@@ -85,11 +94,21 @@ func NewsHandlersByCategory(category string) fiber.Handler {
 			})
 		}
 
+		pageIndexStr := c.Query("page", "1")
+		pageIndex, _ := strconv.ParseInt(pageIndexStr, 10, 64)
+
+		var total int64
+		database.DB.Where("category = ?", category).Model(&models.News{}).Count(&total)
+		pageNum := (total + int64(pageSize) - 1) / int64(pageSize)
+
 		var newsArr []models.News
 
-		database.DB.Where("category = ?", category).Order("created_at").Find(&newsArr)
+		database.DB.Offset(int(pageIndex-1)*pageSize).Limit(pageSize).Where("category = ?", category).Order("created_at").Find(&newsArr)
 
-		return c.JSON(newsArr)
+		return c.JSON(fiber.Map{
+			"data":     newsArr,
+			"page_num": pageNum,
+		})
 	}
 }
 

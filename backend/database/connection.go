@@ -13,11 +13,12 @@ import (
 var DB *gorm.DB
 
 func Connect() {
+	c := config.GetDatabaseConfigurations()
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s",
-		config.Host,
-		config.User,
-		config.Password,
-		config.DBName,
+		c.Host,
+		c.User,
+		c.Password,
+		c.DBName,
 	)
 	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

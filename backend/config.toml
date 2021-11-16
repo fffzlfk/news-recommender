@@ -8,7 +8,6 @@ user = "postgres"
 password = "001004"
 dbname = "news_recommend"
 
-[number]
-max_news_num_of_page = 10
+[numbers]
+page_size = 10
 max_news_num_of_db = 300
-increasement = 5
