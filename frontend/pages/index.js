@@ -36,14 +36,14 @@ export default function Home() {
       <div>
         <h3>{ message }</h3>
         <div className={`${auth ? styles.menu : styles.none}`}>
-          <div><Link href="/news/recommend"><a>猜你喜欢</a></Link></div>
-          <div><Link href="/news/business"><a>商业</a></Link></div>
-          <div><Link href="/news/entertainment"><a>娱乐</a></Link></div>
-          <div><Link href="/news/general"><a>一般</a></Link></div>
-          <div><Link href="/news/health"><a>健康</a></Link></div>
-          <div><Link href="/news/science"><a>科学</a></Link></div>
-          <div><Link href="/news/sports"><a>运动</a></Link></div>
-          <div><Link href="/news/technology"><a>科技</a></Link></div>
+          <div><Link href="/news/recommend?page=1"><a>猜你喜欢</a></Link></div>
+          <div><Link href="/news/business?page=1"><a>商业</a></Link></div>
+          <div><Link href="/news/entertainment?page=1"><a>娱乐</a></Link></div>
+          <div><Link href="/news/general?page=1"><a>一般</a></Link></div>
+          <div><Link href="/news/health?page=1"><a>健康</a></Link></div>
+          <div><Link href="/news/science?page=1"><a>科学</a></Link></div>
+          <div><Link href="/news/sports?page=1"><a>运动</a></Link></div>
+          <div><Link href="/news/technology?page=1"><a>科技</a></Link></div>
         </div>
       </div>
     </Layout>
