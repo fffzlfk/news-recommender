@@ -48,6 +48,9 @@ function isValidImgSrc(src) {
     if (src === "") {
         return false;
     }
+    if (src.includes("mpNews.image")) {
+        return false;
+    }
     if (src == "${mpNews.image}") {
         return false;
     }
