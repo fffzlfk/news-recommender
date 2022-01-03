@@ -7,7 +7,7 @@ import { ButtonGroup, Button } from "@chakra-ui/button";
 import API_BASE_URL from './../_baseurl.json'
 
 export default function Recommend({ category, articles, page, page_num, states }) {
-    const items = articles.map((item, index) => <ListItem><Feed item={item} like={states[index]} /></ListItem>);
+    const items = articles.map((item, index) => <ListItem paddingTop='3'><Feed item={item} like={states[index]} /></ListItem>);
     page = parseInt(page, 10);
     page_num = parseInt(page_num, 10);
     const router = useRouter();
