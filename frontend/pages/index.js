@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
-import Layout from '../layouts/Layout.js';
-import Link from 'next/dist/client/link';
-import styles from "./../styles/index.module.css"
+import Layout from "../components/Layout";
+import NextLink from "next/link";
+import { Link, Flex, Heading, SimpleGrid, VStack } from '@chakra-ui/layout';
+import Entry from '../components/Entry';
+
+import API_BASE_URL from './_baseurl.json'
 
 export default function Home() {
   const [message, setMessage] = useState('');
@@ -11,7 +14,7 @@ export default function Home() {
     (
       async () => {
         try {
-          const resp = await fetch("http://localhost:8000/api/user", {
+          const resp = await fetch(`${API_BASE_URL}/user`, {
             credentials: 'include',
           })
           if (resp.status !== 200) {
@@ -32,20 +35,21 @@ export default function Home() {
 
 
   return (
-    <Layout auth={auth}>
-      <div>
-        <h3>{ message }</h3>
-        <div className={`${auth ? styles.menu : styles.none}`}>
-          <div><Link href="/news/recommend?page=1"><a>猜你喜欢</a></Link></div>
-          <div><Link href="/news/business?page=1"><a>商业</a></Link></div>
-          <div><Link href="/news/entertainment?page=1"><a>娱乐</a></Link></div>
-          <div><Link href="/news/general?page=1"><a>一般</a></Link></div>
-          <div><Link href="/news/health?page=1"><a>健康</a></Link></div>
-          <div><Link href="/news/science?page=1"><a>科学</a></Link></div>
-          <div><Link href="/news/sports?page=1"><a>运动</a></Link></div>
-          <div><Link href="/news/technology?page=1"><a>科技</a></Link></div>
-        </div>
-      </div>
-    </Layout>
+    <Flex direction='column'>
+      <Layout auth={auth} />
+      <VStack padding='5' spacing='5'>
+        <Heading>{message}</Heading>
+        {auth && <SimpleGrid columns={2} spacingX='20' spacingY='2'>
+          <NextLink href="/news/recommend"><Link><Entry category="猜你喜欢" imageSrc="/icons/ai.png" /></Link></NextLink>
+          <NextLink href="/news/business"><Link><Entry category="商业" imageSrc='/icons/business.png' /></Link></NextLink>
+          <NextLink href="/news/entertainment"><Link><Entry category="娱乐" imageSrc='/icons/entertainment.png' /></Link></NextLink>
+          <NextLink href="/news/general"><Link><Entry category="一般" imageSrc="/icons/general.png" /></Link></NextLink>
+          <NextLink href="/news/health"><Link><Entry category="健康" imageSrc="/icons/health.png" /></Link></NextLink>
+          <NextLink href="/news/science"><Link><Entry category="科学" imageSrc="/icons/science.png" /></Link></NextLink>
+          <NextLink href="/news/sports"><Link><Entry category="体育" imageSrc="/icons/sports.png" /></Link></NextLink>
+          <NextLink href="/news/technology"><Link><Entry category="科技" imageSrc="/icons/technology.png" /></Link></NextLink>
+        </SimpleGrid>}
+      </VStack>
+    </Flex>
   )
 }

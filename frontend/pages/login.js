@@ -1,6 +1,17 @@
+import {
+    VStack,
+    FormControl,
+    FormLabel,
+    Button,
+    Input,
+    Heading,
+    Flex
+} from '@chakra-ui/react';
 import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
-import Layout from '../layouts/Layout';
+import Layout from "../components/Layout";
+
+import API_BASE_URL from './_baseurl.json'
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -10,7 +21,7 @@ const Login = () => {
     const submit = async (e) => {
         e.preventDefault();
 
-        await fetch("http://localhost:8000/api/login", {
+        await fetch(`${API_BASE_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -24,28 +35,34 @@ const Login = () => {
     }
 
     return (
-        <Layout>
-            <form onSubmit={submit}>
-                <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+        <Flex direction='column'>
+            <Layout />
+            <Flex direction='column' align='center'>
+                <Heading padding='10'>Please sign in</Heading>
+                <form onSubmit={submit}>
+                    <VStack spacing='5'>
+                        <FormControl>
+                            <FormLabel htmlFor='email'>Email address</FormLabel>
+                            <Input
+                                type="email"
+                                placeholder="name@example.com"
+                                required
+                                onChange={e => setEmail(e.target.value)} />
+                        </FormControl>
 
-                <input
-                    type="email"
-                    className="form-control"
-                    placeholder="name@example.com"
-                    required
-                    onChange={e => setEmail(e.target.value)} />
-
-                <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Password"
-                    required
-                    onChange={e => setPassword(e.target.value)} />
-
-                <button className="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-
-            </form>
-        </Layout>
+                        <FormControl>
+                            <FormLabel htmlFor='password'>Password</FormLabel>
+                            <Input
+                                type="password"
+                                placeholder="Password"
+                                required
+                                onChange={e => setPassword(e.target.value)} />
+                        </FormControl>
+                        <Button type="submit">Sign in</Button>
+                    </VStack>
+                </form>
+            </Flex>
+        </Flex>
     )
 }
 

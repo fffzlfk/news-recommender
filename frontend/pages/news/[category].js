@@ -1,58 +1,67 @@
 import Feed from "../../components/Feed";
-import Layout from "../../layouts/Layout";
-import Link from "next/link";
+import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
+import { Flex, ListItem, UnorderedList, VStack } from "@chakra-ui/layout";
+import { ButtonGroup, Button } from "@chakra-ui/button";
+
+import API_BASE_URL from './../_baseurl.json'
 
 export default function Recommend({ category, articles, page, page_num, states }) {
-    const items = articles.map((item, index) => <li key={item.id}> <Feed item={item} like={states[index]} /> </li>);
+    const items = articles.map((item, index) => <ListItem><Feed item={item} like={states[index]} /></ListItem>);
     page = parseInt(page, 10);
     page_num = parseInt(page_num, 10);
     const router = useRouter();
 
     return (
-        <Layout auth={true}>
-            <div>
-                <ul className="articles">{items}</ul>
-
-                <button
-                    onClick={() => router.push({
-                        pathname: router.pathname,
-                        query: {
-                            page: page - 1,
-                            category: category,
-                        }
-                    })}
-                    disabled={page <= 1}
-                >
-                    PREV
-                </button>
-                <button
-                    onClick={() => router.push({
-                        pathname: router.pathname,
-                        query: {
-                            page: page + 1,
-                            category: category,
-                        }
-                    })}
-                    disabled={page >= page_num}>
-                    NEXT
-                </button>
-                <Link href={{
-                        pathname: router.pathname,
-                        query: {
-                            page: 1,
-                            category: category,
-                        }
-                    }}>
-                    <a>First page</a>
-                </Link>
-            </div>
-        </Layout>
+        <Flex direction='column'>
+            <Layout auth={true} />
+            <VStack >
+                <UnorderedList>{items}</UnorderedList>
+                <ButtonGroup>
+                    <Button
+                        onClick={() => router.push({
+                            pathname: router.pathname,
+                            query: {
+                                page: page - 1,
+                                category: category,
+                            }
+                        })}
+                        isDisabled={page <= 1}
+                    >
+                        PREV
+                    </Button>
+                    <Button
+                        onClick={() => router.push({
+                            pathname: router.pathname,
+                            query: {
+                                page: page + 1,
+                                category: category,
+                            }
+                        })}
+                        isDisabled={page >= page_num}>
+                        NEXT
+                    </Button>
+                    <Button
+                        onClick={() => router.push({
+                            pathname: router.pathname,
+                            query: {
+                                page: 1,
+                                category: category,
+                            }
+                        })}>
+                        First Page
+                    </Button>
+                </ButtonGroup>
+            </VStack>
+        </Flex>
     );
 }
 
 export async function getServerSideProps(ctx) {
-    const resp = await fetch(`http://localhost:8000/api/news/${ctx.params.category}?page=${ctx.query.page}`, {
+    const category = ctx.params.category;
+    const page = ctx.query.page || "1";
+
+    const resp = await fetch(`${API_BASE_URL}/news/${category}?page=${page}`, {
         method: 'GET',
         mdoe: 'cors',
         credentials: 'include',
@@ -60,13 +69,11 @@ export async function getServerSideProps(ctx) {
     });
 
     const data = await resp.json();
-    const category = ctx.params.category;
     const articles = data.data;
     const page_num = data.page_num;
-    const page = ctx.query.page;
 
     const fetchLike = async (id) => {
-        return await fetch(`http://localhost:8000/api/like/get?news_id=${id}`, {
+        return await fetch(`${API_BASE_URL}/like/get?news_id=${id}`, {
             method: 'GET',
             mdoe: 'cors',
             credentials: 'include',

@@ -1,7 +1,9 @@
-import styles from "./../styles/Feed.module.css";
-import Head from 'next/head';
+import { Icon, Image, Box, VStack, Text, Link, IconButton, Heading } from '@chakra-ui/react';
+import NextLink from "next/link"
 import { useState } from "react";
+import { FcLikePlaceholder, FcLike } from 'react-icons/fc'
 
+import API_BASE_URL from './../pages/_baseurl.json'
 
 export default function Feed({ item, like }) {
     const [likeState, setLikeState] = useState(like.state);
@@ -11,7 +13,7 @@ export default function Feed({ item, like }) {
         const action = likeState ? "undo" : "do";
 
         const fetchData = async () => {
-            await fetch(`http://localhost:8000/api/like/action?news_id=${item.id}&action=${action}`, {
+            await fetch(`${API_BASE_URL}/like/action?news_id=${item.id}&action=${action}`, {
                 method: 'GET',
                 mdoe: 'cors',
                 credentials: 'include',
@@ -23,24 +25,29 @@ export default function Feed({ item, like }) {
         setLikeState(!likeState);
     }
 
+    const unLikedIcon = <Icon as={FcLikePlaceholder} />;
+    const likedIcon = <Icon as={FcLike} />
+
     return (
-        <div className={styles.post}>
-            <Head>
-                <meta name="referrer" content="no-referrer" />
-            </Head>
-            <h3 >
-                <a href={item.url} target="_blank">
-                    {item.title}
-                </a>
-            </h3>
-            <p >{item.description}</p>
-            <img className={`${isValidImgSrc(item.url_to_image) ? styles.post.img : styles.none}`} src={item.url_to_image} alt="NewsImage" />
-            <br />
-            <button className={likeState? styles.btn_liked : styles.btn_unliked }
-                onClick={(e) => handleClick(e)}>
-                {likeState ? "取消点赞": "点赞" }
-            </button>
-        </div>
+        <Box maxW='600' padding='5' borderWidth='1px' borderRadius='md' overflow='hidden'>
+            <VStack spacing='5'>
+                <NextLink href={item.url}>
+                    <Link padding='5'>
+                        <Heading size='md'>
+                            {item.title}
+                        </Heading>
+                    </Link>
+                </NextLink>
+
+                <Text>{item.description}</Text>
+
+                {isValidImgSrc(item.url_to_image) && <Image maxW='400' src={item.url_to_image} alt="NewsImage" />}
+
+                <IconButton onClick={(e) => handleClick(e)} icon={likeState ? likedIcon : unLikedIcon}>
+                    {likeState ? "取消点赞" : "点赞"}
+                </IconButton>
+            </VStack>
+        </Box>
     )
 }
 
