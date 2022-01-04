@@ -32,11 +32,13 @@ export default function Feed({ item, like }) {
         <Box maxW='600' padding='5' borderWidth='1px' borderRadius='md' overflow='hidden'>
             <VStack spacing='5'>
                 <NextLink href={item.url}>
-                    <Link padding='5'>
+                    <a>
+                    <Link>
                         <Heading size='md'>
                             {item.title}
                         </Heading>
                     </Link>
+                    </a>
                 </NextLink>
 
                 <Text>{item.description}</Text>

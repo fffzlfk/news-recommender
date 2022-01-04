@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Layout from "../components/Layout";
+import Nav from "../components/Nav";
 import NextLink from "next/link";
 import { Link, Flex, Heading, SimpleGrid, VStack } from '@chakra-ui/layout';
 import Entry from '../components/Entry';
@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <Flex direction='column'>
-      <Layout auth={auth} />
+      <Nav auth={auth} />
       <VStack padding='5' spacing='5'>
         <Heading>{message}</Heading>
         {auth && <SimpleGrid columns={2} spacingX='20' spacingY='2'>

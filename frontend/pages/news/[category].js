@@ -1,5 +1,5 @@
 import Feed from "../../components/Feed";
-import Layout from "../../components/Layout";
+import Nav from "../../components/Nav";
 import { useRouter } from "next/router";
 import { Flex, ListItem, UnorderedList, VStack } from "@chakra-ui/layout";
 import { ButtonGroup, Button } from "@chakra-ui/button";
@@ -7,14 +7,14 @@ import { ButtonGroup, Button } from "@chakra-ui/button";
 import API_BASE_URL from './../_baseurl.json'
 
 export default function Recommend({ category, articles, page, page_num, states }) {
-    const items = articles.map((item, index) => <ListItem paddingTop='3'><Feed item={item} like={states[index]} /></ListItem>);
+    const items = articles.map((item, index) => <ListItem paddingTop='3' key={index}><Feed item={item} like={states[index]} /></ListItem>);
     page = parseInt(page, 10);
     page_num = parseInt(page_num, 10);
     const router = useRouter();
 
     return (
         <Flex direction='column'>
-            <Layout auth={true} />
+            <Nav auth={true} />
             <VStack >
                 <UnorderedList>{items}</UnorderedList>
                 <ButtonGroup>

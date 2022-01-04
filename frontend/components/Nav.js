@@ -4,7 +4,7 @@ import NextLink from "next/link"
 import { useRouter } from "next/dist/client/router";
 import ThemeToggler from "./ThemeToggler";
 
-const Layout = (props) => {
+const Nav = (props) => {
     const router = useRouter();
 
     const logout = async () => {
@@ -70,4 +70,4 @@ const Layout = (props) => {
         </Flex>
     )
 }
-export default Layout;
+export default Nav;

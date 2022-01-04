@@ -1,4 +1,4 @@
-import Layout from "../components/Layout";
+import Nav from "../components/Nav";
 import React, { useState } from 'react';
 import { useRouter } from 'next/dist/client/router';
 import {
@@ -36,7 +36,7 @@ const Register = () => {
 
     return (
         <Flex direction='column'>
-            <Layout />
+            <Nav />
             <Flex direction='column' align='center'>
                 <Heading padding='10'>Please sign in</Heading>
                 <form onSubmit={submit}>
