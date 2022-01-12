@@ -1,8 +1,7 @@
 package controllers
 
 import (
-	"news-api/database"
-	"news-api/models"
+	"news-api/service"
 	"strconv"
 	"time"
 
@@ -20,16 +19,10 @@ func RegisterHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
-
-	user := models.User{
-		Name:     data["name"],
-		Email:    data["email"],
-		Password: password,
+	user, err := service.RegisterService(data)
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
 	}
-
-	database.DB.Create(&user)
-
 	return c.JSON(user)
 }
 
@@ -40,10 +33,8 @@ func LoginHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	var user models.User
-
-	database.DB.Where("email = ?", data["email"]).First(&user)
-	if user.ID == 0 {
+	user, err := service.LoginService(data)
+	if err != nil {
 		c.Status(fiber.StatusNotFound)
 		return c.JSON(fiber.Map{
 			"message": "User not found",
@@ -57,9 +48,9 @@ func LoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    strconv.Itoa(int(user.ID)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 	})
 
 	token, err := claims.SignedString([]byte(SecretKey))
@@ -88,7 +79,7 @@ func JwtAuthMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		cookie := c.Cookies("jwt")
 
-		token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(t *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{}, func(t *jwt.Token) (interface{}, error) {
 			return []byte(SecretKey), nil
 		})
 
@@ -99,7 +90,7 @@ func JwtAuthMiddleware() fiber.Handler {
 			})
 		}
 
-		claims := token.Claims.(*jwt.StandardClaims)
+		claims := token.Claims.(*jwt.RegisteredClaims)
 		id := claims.Issuer
 		c.Locals("id", id)
 
@@ -110,10 +101,8 @@ func JwtAuthMiddleware() fiber.Handler {
 func UserHandler(c *fiber.Ctx) error {
 	id := c.Locals("id").(string)
 
-	var user models.User
-
-	res := database.DB.Where("id = ?", id).First(&user)
-	if res.Error != nil {
+	user, err := service.UserService(id)
+	if err != nil {
 		c.Status(fiber.StatusUnauthorized)
 		return c.JSON(fiber.Map{
 			"message": "unauthenticated",
