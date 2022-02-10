@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/robtec/newsapi/api"
+	"gorm.io/gorm/clause"
 )
 
 const apiKey = "d1f4a490e88f467ab34c822443df7b32"
@@ -55,7 +56,7 @@ func crawlNews() {
 					Author:      art.Author,
 					CreatedAt:   time.Now().Unix(),
 				}
-				database.DB.Create(&news)
+				database.DB.Clauses(clause.OnConflict{DoNothing: true}).Create(&news)
 			}
 			wg.Done()
 		}(category)

@@ -71,10 +71,34 @@ func LikeStateHandler(c *fiber.Ctx) error {
 
 func LikeNewsHandler(c *fiber.Ctx) error {
 	userID := c.Locals("id").(string)
+	intUserID, _ := strconv.Atoi(userID)
+
 	newsID := c.Query("news_id")
+	intNewsID, _ := strconv.Atoi(newsID)
+
 	action := c.Query("action")
 
-	err := service.LikeNewsService(userID, newsID, action)
+	err := service.LikeNewsService(intUserID, intNewsID, action)
+	if err != nil {
+		c.Status(fiber.ErrBadRequest.Code)
+		return c.JSON(fiber.Map{
+			"message": err,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
+}
+
+func ClickNewsHandler(c *fiber.Ctx) error {
+	userID := c.Locals("id").(string)
+	intUserID, _ := strconv.Atoi(userID)
+
+	newsID := c.Query("news_id")
+	intNewsID, _ := strconv.Atoi(newsID)
+
+	err := service.ClickNewsService(intUserID, intNewsID)
 	if err != nil {
 		c.Status(fiber.ErrBadRequest.Code)
 		return c.JSON(fiber.Map{

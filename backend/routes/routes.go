@@ -25,4 +25,6 @@ func Setup(app *fiber.App) {
 	likeAPI := app.Group("/api/like")
 	likeAPI.Get("/action", controllers.LikeNewsHandler)
 	likeAPI.Get("/get", controllers.LikeStateHandler)
+
+	app.Get("/api/click", controllers.ClickNewsHandler)
 }

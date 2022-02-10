@@ -15,7 +15,7 @@ export default function Recommend({ category, articles, page, page_num, states }
     return (
         <Flex direction='column'>
             <Nav auth={true} />
-            <VStack >
+            <VStack paddingBlock={5}>
                 <UnorderedList>{items}</UnorderedList>
                 <ButtonGroup>
                     <Button
