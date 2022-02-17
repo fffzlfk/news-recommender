@@ -52,7 +52,7 @@ func crawlNews() {
 					Url:         art.URL,
 					UrlToImage:  art.URLToImage,
 					Category:    category,
-					Source:      art.Source.ID,
+					Source:      art.Source.Name,
 					Author:      art.Author,
 					CreatedAt:   time.Now().Unix(),
 				}

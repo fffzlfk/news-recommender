@@ -3,18 +3,23 @@ import Nav from "../../components/Nav";
 import { useRouter } from "next/router";
 import { Flex, ListItem, UnorderedList, VStack } from "@chakra-ui/layout";
 import { ButtonGroup, Button } from "@chakra-ui/button";
+import Head from 'next/head';
 
 import API_BASE_URL from './../_baseurl.json'
+import { categoryMapping } from "../../lib/util.ts";
 
 export default function Recommend({ category, articles, page, page_num, states }) {
-    const items = articles.map((item, index) => <ListItem paddingTop='3' key={index}><Feed item={item} like={states[index]} /></ListItem>);
+    const items = articles.map((item, index) => <ListItem paddingTop='3' key={index}><Feed item={item} like={states[index]} isRecommend={category === 'recommend'} /></ListItem>);
     page = parseInt(page, 10);
     page_num = parseInt(page_num, 10);
     const router = useRouter();
 
     return (
         <Flex direction='column'>
-            <Nav auth={true} />
+            <Head>
+                <title>{categoryMapping(category)}</title>
+            </Head>
+            <Nav auth={true} category={category} />
             <VStack paddingBlock={5}>
                 <UnorderedList>{items}</UnorderedList>
                 <ButtonGroup>
@@ -28,7 +33,7 @@ export default function Recommend({ category, articles, page, page_num, states }
                         })}
                         isDisabled={page <= 1}
                     >
-                        PREV
+                        Prev
                     </Button>
                     <Button
                         onClick={() => router.push({
@@ -39,7 +44,7 @@ export default function Recommend({ category, articles, page, page_num, states }
                             }
                         })}
                         isDisabled={page >= page_num}>
-                        NEXT
+                        Next
                     </Button>
                     <Button
                         onClick={() => router.push({
