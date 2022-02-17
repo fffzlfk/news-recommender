@@ -13,7 +13,7 @@ func deleteNews() {
 	database.DB.Where("created_at < ?", time.Now().AddDate(0, 0, -3).Unix()).Find(&newsArr)
 	for _, news := range newsArr {
 		database.DB.Exec("DELETE FROM liked_news WHERE news_id=?", news.ID)
-		database.DB.Exec("DELETE FROM recommend_news WHERE news_id=?", news.ID)
+		database.DB.Exec("DELETE FROM recommended_news WHERE news_id=?", news.ID)
 		database.DB.Exec("DELETE FROM clicked_news WHERE news_id=?", news.ID)
 		database.DB.Model(&models.News{}).Delete(&news)
 	}

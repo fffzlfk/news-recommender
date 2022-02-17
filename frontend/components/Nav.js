@@ -3,8 +3,9 @@ import { Text, Flex, Link, Spacer, useColorMode, Box } from '@chakra-ui/react'
 import NextLink from "next/link"
 import { useRouter } from "next/dist/client/router";
 import ThemeToggler from "./ThemeToggler";
+import { categoryMapping } from "../lib/util.ts";
 
-const Nav = (props) => {
+const Nav = ({ auth, category }) => {
     const router = useRouter();
 
     const logout = async () => {
@@ -18,7 +19,7 @@ const Nav = (props) => {
     }
     let menu;
 
-    if (!props.auth) {
+    if (!auth) {
         menu = (
             <Flex>
                 <NextLink href="/login">
@@ -62,6 +63,8 @@ const Nav = (props) => {
                     </Text>
                 </Link>
             </NextLink>
+            <Spacer />
+            <Text fontSize='large' fontWeight='extrabold'>{categoryMapping(category)}</Text>
             <Spacer />
             <Box paddingRight='5'>
                 <ThemeToggler colorMode={colorMode} toggleColorMode={toggleColorMode} />

@@ -6,7 +6,6 @@ const ThemeToggler = ({ colorMode, toggleColorMode }) => {
     return (
         <IconButton
             onClick={toggleColorMode}
-            colorScheme='teal'
             icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         />
     )
