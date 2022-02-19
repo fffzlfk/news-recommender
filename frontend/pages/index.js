@@ -39,11 +39,10 @@ export default function Home() {
       <Nav auth={auth} />
       <VStack padding='5' spacing='5'>
         <Heading>{message}</Heading>
+        {auth && <NextLink href="/news/recommend"><Link><Entry category="猜你喜欢" imageSrc="/icons/ai.png" /></Link></NextLink>}
         {auth && <SimpleGrid columns={2} spacingX='20' spacingY='2'>
-          <NextLink href="/news/recommend"><Link><Entry category="猜你喜欢" imageSrc="/icons/ai.png" /></Link></NextLink>
           <NextLink href="/news/business"><Link><Entry category="商业" imageSrc='/icons/business.png' /></Link></NextLink>
           <NextLink href="/news/entertainment"><Link><Entry category="娱乐" imageSrc='/icons/entertainment.png' /></Link></NextLink>
-          <NextLink href="/news/general"><Link><Entry category="一般" imageSrc="/icons/general.png" /></Link></NextLink>
           <NextLink href="/news/health"><Link><Entry category="健康" imageSrc="/icons/health.png" /></Link></NextLink>
           <NextLink href="/news/science"><Link><Entry category="科学" imageSrc="/icons/science.png" /></Link></NextLink>
           <NextLink href="/news/sports"><Link><Entry category="体育" imageSrc="/icons/sports.png" /></Link></NextLink>

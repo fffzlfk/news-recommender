@@ -31,8 +31,7 @@ export default function Recommend({ category, articles, page, page_num, states }
                                 category: category,
                             }
                         })}
-                        isDisabled={page <= 1}
-                    >
+                        isDisabled={page <= 1}>
                         Prev
                     </Button>
                     <Button
@@ -68,7 +67,7 @@ export async function getServerSideProps(ctx) {
 
     const resp = await fetch(`${API_BASE_URL}/news/${category}?page=${page}`, {
         method: 'GET',
-        mdoe: 'cors',
+        mode: 'cors',
         credentials: 'include',
         headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined
     });
@@ -80,7 +79,7 @@ export async function getServerSideProps(ctx) {
     const fetchLike = async (id) => {
         return await fetch(`${API_BASE_URL}/like/get?news_id=${id}`, {
             method: 'GET',
-            mdoe: 'cors',
+            mode: 'cors',
             credentials: 'include',
             headers: ctx.req ? { cookie: ctx.req.headers.cookie } : undefined
         })

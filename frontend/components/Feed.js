@@ -69,9 +69,9 @@ export default function Feed({ item, like, isRecommend }) {
                             </Heading>
                         </Tooltip>
                     </Link>
-                    <Link href={`/news/${item.category}`}>
+                    {item.category !== "general" && <Link href={`/news/${item.category}`}>
                         {isRecommend && <Tag size='lg'><TagLabel>{category}</TagLabel></Tag>}
-                    </Link>
+                    </Link>}
                 </HStack>
                 <Text>{item.description}</Text>
 
