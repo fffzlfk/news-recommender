@@ -1,6 +1,7 @@
 package similarity
 
 import (
+	"log"
 	"news-api/models"
 	"news-api/rpc/client"
 	"sort"
@@ -26,23 +27,25 @@ func NewRecommender(recentnews []models.News) (*Recommender, func()) {
 
 func titleMatchValue(mpA, mpB map[string]float32) (value float32) {
 	for k, v := range mpA {
-		value += v * mpB[k]
+		value += v * mpB[k] * 100.0
 	}
 	return
 }
 
 func (r *Recommender) newsMatchValue(mother, news models.News, motherMap map[string]float32) (value float32) {
-	if mother.Category == news.Category {
+	if mother.Category != "general" && mother.Category == news.Category {
 		value += 4.0
 	}
 
-	value += titleMatchValue(motherMap, r.recentNews[news.ID])
+	v := titleMatchValue(motherMap, r.recentNews[news.ID])
+	log.Println(v)
+	value += v
 
-	if mother.Source == news.Source {
+	if news.Source != "" && mother.Source == news.Source {
 		value += 1.5
 	}
 
-	if mother.Author == news.Author {
+	if news.Author != "" && mother.Author == news.Author {
 		value += 1.5
 	}
 
