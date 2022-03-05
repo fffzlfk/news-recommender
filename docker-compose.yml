@@ -1,5 +1,17 @@
 version: '3'
 services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=news_recommend
+    ports:
+      - '5432:5432'
+    volumes: 
+      - ./postgres-data:/var/lib/postgresql/data 
+
   backend:
     build: ./backend
     image: backend
@@ -8,6 +20,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
+      - db
       - key_words
 
   frontend:
@@ -25,7 +38,3 @@ services:
     container_name: key_words
     ports:
       - "50052:50052"
-
-networks:
-    product_service_network:
-        driver: bridge
