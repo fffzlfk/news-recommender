@@ -14,8 +14,9 @@ var DB *gorm.DB
 
 func Connect() {
 	c := config.GetDatabaseConfigurations()
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s",
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
 		c.Host,
+        c.Port,
 		c.User,
 		c.Password,
 		c.DBName,
