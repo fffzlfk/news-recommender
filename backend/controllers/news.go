@@ -26,8 +26,9 @@ func NewsRecommendHandler(c *fiber.Ctx) error {
 	}
 
 	if len(data) == 0 {
-		NewsHandlersByCategory("general")(c)
-		return nil
+		return c.JSON(fiber.Map{
+			"page_num": 0,
+		})
 	}
 
 	return c.JSON(fiber.Map{
@@ -106,6 +107,23 @@ func ClickNewsHandler(c *fiber.Ctx) error {
 		})
 	}
 
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
+}
+
+func ColdStartHandler(c *fiber.Ctx) error {
+	userID := c.Locals("id").(string)
+	intUserID, _ := strconv.Atoi(userID)
+
+	var categorys []string
+	if err := c.BodyParser(&categorys); err != nil {
+		return err
+	}
+
+	if err := service.ColdStartService(intUserID, categorys); err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
 	return c.JSON(fiber.Map{
 		"message": "success",
 	})
