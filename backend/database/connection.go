@@ -16,7 +16,7 @@ func Connect() {
 	c := config.GetDatabaseConfigurations()
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
 		c.Host,
-        c.Port,
+		c.Port,
 		c.User,
 		c.Password,
 		c.DBName,
@@ -28,5 +28,5 @@ func Connect() {
 	DB = conn
 
 	conn.SetupJoinTable(&models.User{}, "RecommendedNews", &models.RecommendedNews{})
-	conn.AutoMigrate(models.User{}, models.News{})
+	conn.AutoMigrate(&models.User{}, &models.News{}, &models.CategoryType{})
 }

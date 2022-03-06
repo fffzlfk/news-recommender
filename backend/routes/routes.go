@@ -27,4 +27,6 @@ func Setup(app *fiber.App) {
 	likeAPI.Get("/get", controllers.LikeStateHandler)
 
 	app.Get("/api/click", controllers.ClickNewsHandler)
+
+	app.Post("/api/coldstart", controllers.ColdStartHandler)
 }

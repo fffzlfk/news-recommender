@@ -44,6 +44,7 @@ const Login = () => {
                         <FormControl>
                             <FormLabel htmlFor='email'>Email address</FormLabel>
                             <Input
+                                id='0'
                                 type="email"
                                 placeholder="name@example.com"
                                 required
@@ -53,6 +54,7 @@ const Login = () => {
                         <FormControl>
                             <FormLabel htmlFor='password'>Password</FormLabel>
                             <Input
+                                id="1"
                                 type="password"
                                 placeholder="Password"
                                 required

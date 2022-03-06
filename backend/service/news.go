@@ -131,3 +131,51 @@ func ClickNewsService(userID, newsID int) error {
 
 	return nil
 }
+
+func ColdStartService(userID int, categorys []string) error {
+	var user models.User
+	user.ID = uint(userID)
+
+	for _, category := range categorys {
+		user.ColdStart = append(user.ColdStart, models.CategoryType{
+			Category: category,
+		})
+	}
+
+	if err := database.DB.Model(&user).Association("ColdStart").Replace(user.ColdStart); err != nil {
+		return err
+	}
+
+	if err := updateRecommendListFromColdStart(user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func updateRecommendListFromColdStart(user models.User) error {
+	if err := database.DB.First(&user, user.ID).Error; err != nil {
+		return err
+	}
+
+	if err := database.DB.Model(&user).Association("ColdStart").Find(&user.ColdStart); err != nil {
+		return err
+	}
+
+	for _, category := range user.ColdStart {
+		var newsArr []models.News
+		if err := database.DB.Where("category = ?", category.Category).Find(&newsArr).Error; err != nil {
+			return err
+		}
+		for _, news := range newsArr {
+			if err := database.DB.Clauses(clause.OnConflict{DoNothing: true}).Create(&models.RecommendedNews{
+				UserID:        user.ID,
+				NewsID:        news.ID,
+				RecommendedAt: time.Now().Unix(),
+			}).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
