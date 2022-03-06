@@ -7,7 +7,7 @@ import Head from 'next/head';
 
 import API_BASE_URL from './../_baseurl.json'
 import { categoryMapping } from "../../lib/util.ts";
-import { Drawer, DrawerBody, DrawerHeader, Checkbox } from "@chakra-ui/react";
+import {Heading, Stack, Checkbox } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function Recommend({ isColdStart, category, articles, page, page_num, states }) {
@@ -69,13 +69,13 @@ export default function Recommend({ isColdStart, category, articles, page, page_
                     <title>{categoryMapping(category)}</title>
                 </Head>
                 <Nav auth={true} category={category} />
-                <Drawer isOpen={true}>
-                    <DrawerHeader>选择你感兴趣的新闻类别</DrawerHeader>
-                    <DrawerBody>
+                <VStack paddingTop={20} spacing={10}>
+                    <Heading>选择你感兴趣的新闻类别</Heading>
+                    <Flex>
                         {items.map((item, index) => <Checkbox key={index} isChecked={item.isChecked} onChange={() => handleOnChange(index)}>{categoryMapping(item.name)}</Checkbox>)}
-                    </DrawerBody>
+                    </Flex>
                     <Button onClick={e => submit(e)}>提交</Button>
-                </Drawer>
+                </VStack>
             </Flex>
         );
     }
