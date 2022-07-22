@@ -1,0 +1,19 @@
+version: 2
+updates:
+
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+
+  # Maintain dependencies for gomod
+  - package-ecosystem: "gomod"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+   # Maintain dependencies for pip
+  - package-ecosystem: "pip"
+    directory: "/key_words"
+    schedule:
+      interval: "weekly"
