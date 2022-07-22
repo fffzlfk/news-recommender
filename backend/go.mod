@@ -10,7 +10,7 @@ require (
 	google.golang.org/grpc v1.42.0
 	google.golang.org/protobuf v1.27.1
 	gorm.io/driver/postgres v1.2.3
-	gorm.io/gorm v1.22.5
+	gorm.io/gorm v1.23.8
 )
 
 require github.com/lib/pq v1.10.4 // indirect
