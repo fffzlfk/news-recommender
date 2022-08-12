@@ -1,4 +1,4 @@
-name: CI
+name: Node Test
 
 defaults:
   run:
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: borales/actions-yarn@v3.0.0
         with:
-          cmd: install # will run `yarn install` command
+          cmd: --cwd frontend install # will run `yarn install` command
       - uses: borales/actions-yarn@v3.0.0
         with:
-          cmd: build # will run `yarn build` command
+          cmd: --cwd frontend build # will run `yarn build` command
