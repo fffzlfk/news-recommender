@@ -24,4 +24,4 @@ jobs:
       - name: build
         run: go build
       - name: gofmt
-        run: gogmt -w .
+        run: gofmt -l .
