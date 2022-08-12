@@ -2,7 +2,7 @@ name: Go Test
 
 defaults:
   run:
-    working-directory: server
+    working-directory: backend
 on:
   push:
     branches: [ main ]

@@ -1,5 +1,15 @@
 name: CI
-on: [push]
+
+defaults:
+  run:
+    working-directory: frontend
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
   build:
     name: Test
