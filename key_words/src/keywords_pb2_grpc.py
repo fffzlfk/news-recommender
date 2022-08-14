@@ -15,10 +15,10 @@ class GreeterStub(object):
             channel: A grpc.Channel.
         """
         self.GetKeywords = channel.unary_unary(
-                '/keywords.Greeter/GetKeywords',
-                request_serializer=keywords__pb2.GetKeywordsReq.SerializeToString,
-                response_deserializer=keywords__pb2.GetKeywordsResp.FromString,
-                )
+            "/keywords.Greeter/GetKeywords",
+            request_serializer=keywords__pb2.GetKeywordsReq.SerializeToString,
+            response_deserializer=keywords__pb2.GetKeywordsResp.FromString,
+        )
 
 
 class GreeterServicer(object):
@@ -27,40 +27,53 @@ class GreeterServicer(object):
     def GetKeywords(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
 
 def add_GreeterServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetKeywords': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetKeywords,
-                    request_deserializer=keywords__pb2.GetKeywordsReq.FromString,
-                    response_serializer=keywords__pb2.GetKeywordsResp.SerializeToString,
-            ),
+        "GetKeywords": grpc.unary_unary_rpc_method_handler(
+            servicer.GetKeywords,
+            request_deserializer=keywords__pb2.GetKeywordsReq.FromString,
+            response_serializer=keywords__pb2.GetKeywordsResp.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'keywords.Greeter', rpc_method_handlers)
+        "keywords.Greeter", rpc_method_handlers
+    )
     server.add_generic_rpc_handlers((generic_handler,))
 
 
- # This class is part of an EXPERIMENTAL API.
+# This class is part of an EXPERIMENTAL API.
 class Greeter(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def GetKeywords(request,
+    def GetKeywords(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/keywords.Greeter/GetKeywords',
+            "/keywords.Greeter/GetKeywords",
             keywords__pb2.GetKeywordsReq.SerializeToString,
             keywords__pb2.GetKeywordsResp.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
