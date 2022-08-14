@@ -13,6 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: rickstaa/action-black@v1
+      - uses: rickstaa/action-black@v2
         with:
-          black_args: "keywords/src --check"
+          workdir: key_words
