@@ -22,7 +22,7 @@ def get_keywords(text):
     tr4w.analyze(text=text, lower=True, window=2)
 
     res = []
-    print('关键词：')
+    print("关键词：")
     for item in tr4w.get_keywords(5, word_min_len=2):
         print(item.word, item.weight)
         res.append(keywords_pb2.Item(word=item.word, weight=item.weight))
@@ -34,16 +34,16 @@ def serve():
     # 启动 rpc 服务
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     keywords_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
-    server.add_insecure_port('[::]:50052')
+    server.add_insecure_port("[::]:50052")
     server.start()
-    print('INFO: server started')
+    print("INFO: server started")
 
     try:
         while True:
-            time.sleep(60*60*24)  # one day in seconds
+            time.sleep(60 * 60 * 24)  # one day in seconds
     except KeyboardInterrupt:
         server.stop(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     serve()
