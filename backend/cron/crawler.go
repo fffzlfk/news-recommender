@@ -41,11 +41,11 @@ func crawlNews() {
 			}
 			topHeadlines, err := client.TopHeadlines(opts)
 			if err != nil {
+				log.Println(err)
 				return
 			}
 
 			for _, art := range topHeadlines.Articles {
-
 				news := models.News{
 					Title:       art.Title,
 					Description: art.Description,

@@ -4,7 +4,8 @@ import NextLink from "next/link";
 import { Link, Flex, Heading, SimpleGrid, VStack } from '@chakra-ui/layout';
 import Entry from '../components/Entry';
 
-import API_BASE_URL from './_baseurl.json'
+// import NEXT_PUBLIC_API_BASE_URL from './_baseurl.json'
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function Home() {
   const [message, setMessage] = useState('');
@@ -14,7 +15,7 @@ export default function Home() {
     (
       async () => {
         try {
-          const resp = await fetch(`${API_BASE_URL}/user`, {
+          const resp = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/user`, {
             credentials: 'include',
           })
           if (resp.status !== 200) {

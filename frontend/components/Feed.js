@@ -3,7 +3,7 @@ import { useState } from "react";
 import { FcLikePlaceholder, FcLike } from 'react-icons/fc'
 import { categoryMapping } from './../lib/util.ts';
 
-import API_BASE_URL from './../pages/_baseurl.json'
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function Feed({ item, like, isRecommend }) {
     const [likeState, setLikeState] = useState(like.state);
@@ -14,7 +14,7 @@ export default function Feed({ item, like, isRecommend }) {
         const action = likeState ? "undo" : "do";
 
         const fetchData = async () => {
-            await fetch(`${API_BASE_URL}/like/action?news_id=${item.id}&action=${action}`, {
+            await fetch(`${NEXT_PUBLIC_API_BASE_URL}/like/action?news_id=${item.id}&action=${action}`, {
                 method: 'GET',
                 mdoe: 'cors',
                 credentials: 'include',
@@ -39,7 +39,7 @@ export default function Feed({ item, like, isRecommend }) {
         e.preventDefault();
 
         const fetchData = async () => {
-            await fetch(`${API_BASE_URL}/click?news_id=${item.id}`, {
+            await fetch(`${NEXT_PUBLIC_API_BASE_URL}/click?news_id=${item.id}`, {
                 method: 'GET',
                 mdoe: 'cors',
                 credentials: 'include',

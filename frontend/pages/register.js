@@ -11,7 +11,7 @@ import {
     Flex
 } from '@chakra-ui/react';
 
-import API_BASE_URL from './_baseurl.json'
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -21,7 +21,7 @@ const Register = () => {
 
     const submit = async (e) => {
         e.preventDefault();
-        await fetch(`${API_BASE_URL}/register`, {
+        await fetch(`${NEXT_PUBLIC_API_BASE_URL}/register`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

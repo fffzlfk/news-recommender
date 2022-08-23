@@ -5,7 +5,7 @@ import { Flex, ListItem, UnorderedList, VStack } from "@chakra-ui/layout";
 import { ButtonGroup, Button } from "@chakra-ui/button";
 import Head from 'next/head';
 
-import API_BASE_URL from './../_baseurl.json'
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { categoryMapping } from "../../lib/util.ts";
 import {Heading, Stack, Checkbox } from "@chakra-ui/react";
 import { useState } from "react";
@@ -52,7 +52,7 @@ export default function Recommend({ isColdStart, category, articles, page, page_
 
             const categorys = items.filter(item => item.isChecked).map(item => item.name);
 
-            await fetch(`${API_BASE_URL}/coldstart`, {
+            await fetch(`${NEXT_PUBLIC_API_BASE_URL}/coldstart`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -136,7 +136,7 @@ export async function getServerSideProps(ctx) {
     const category = ctx.params.category;
     const page = ctx.query.page || "1";
 
-    const resp = await fetch(`${API_BASE_URL}/news/${category}?page=${page}`, {
+    const resp = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/news/${category}?page=${page}`, {
         method: 'GET',
         mode: 'cors',
         credentials: 'include',
@@ -152,7 +152,7 @@ export async function getServerSideProps(ctx) {
     }
 
     const fetchLike = async (id) => {
-        return await fetch(`${API_BASE_URL}/like/get?news_id=${id}`, {
+        return await fetch(`${NEXT_PUBLIC_API_BASE_URL}/like/get?news_id=${id}`, {
             method: 'GET',
             mode: 'cors',
             credentials: 'include',

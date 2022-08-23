@@ -7,6 +7,8 @@ FROM node:lts as builder
 WORKDIR /frontend
 COPY . .
 COPY --from=dependencies /frontend/node_modules ./node_modules
+ARG NEXT_PUBLIC_API_BASE_URL
+RUN echo NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL} > .env
 RUN yarn build
 
 FROM node:lts as runner

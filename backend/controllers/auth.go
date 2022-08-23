@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"news-api/service"
 	"strconv"
 	"time"
@@ -20,6 +21,7 @@ func RegisterHandler(c *fiber.Ctx) error {
 	}
 
 	user, err := service.RegisterService(data)
+	log.Println(err)
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}

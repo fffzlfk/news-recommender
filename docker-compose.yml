@@ -1,38 +1,55 @@
-version: '3'
+version: '3.9'
 services:
-  db:
-    image: postgres:14.1-alpine
+  mydb:
     restart: always
+    image: mysql
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=news_recommend
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "114514"
+      MYSQL_DATABASE: news_recommend
+    container_name: mydb
     ports:
-      - '5432:5432'
-    volumes: 
-      - ./postgres-data:/var/lib/postgresql/data 
+      - "3306:3306"
+    tty: true
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 30s
+      interval: 1s
+      retries: 30
 
   backend:
-    build: ./backend
+    restart: unless-stopped
+    build: 
+      context: ./backend
+      args:
+        PROXY: http://192.168.0.109:7890
     image: backend
     container_name: backend
-    network_mode: "host"
+    environment:
+      MYSQL_ROOT_PASSWORD: "114514"
+      MYSQL_DATABASE: "news_recommend"
+      MYSQL_HOST: "mydb"
+      MYSQL_PORT: "3306"
     ports:
-      - "8000:8000"
+      - "8080:8080"
+    tty: true
     depends_on:
-      - db
-      - key_words
+      mydb:
+        condition: service_healthy
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://192.168.0.104:8080/api
     image: frontend
     container_name: frontend
     ports:
-      - "3000:3000"
+      - "80:3000"
     depends_on:
       - backend
 
-  key-words:
+  key_words:
     build: ./key_words
     image: key_words
     container_name: key_words

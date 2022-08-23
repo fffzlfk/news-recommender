@@ -11,7 +11,7 @@ import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
 import Nav from "../components/Nav";
 
-import API_BASE_URL from './_baseurl.json'
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -21,7 +21,7 @@ const Login = () => {
     const submit = async (e) => {
         e.preventDefault();
 
-        await fetch(`${API_BASE_URL}/login`, {
+        await fetch(`${NEXT_PUBLIC_API_BASE_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
