@@ -18,7 +18,7 @@ services:
       retries: 30
 
   backend:
-    restart: unless-stopped
+    restart: on-failure
     build: 
       context: ./backend
       args:
@@ -30,6 +30,7 @@ services:
       MYSQL_DATABASE: "news_recommend"
       MYSQL_HOST: "mydb"
       MYSQL_PORT: "3306"
+      KEY_WORDS_HOST: "key_words"
     ports:
       - "8080:8080"
     tty: true
@@ -48,6 +49,7 @@ services:
       - "80:3000"
     depends_on:
       - backend
+      - key_words
 
   key_words:
     build: ./key_words

@@ -1,7 +1,6 @@
 FROM golang:1.17-buster
 ARG PROXY
-ENV http_proxy ${PROXY}
-ENV https_proxy ${PROXY}
+ENV PROXY ${PROXY}
 ENV GO111MODULE=on
 RUN mkdir backend
 ADD . /backend/

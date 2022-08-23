@@ -1,7 +1,6 @@
 package similarity
 
 import (
-	"log"
 	"news-api/models"
 	"news-api/rpc/client"
 	"sort"
@@ -38,7 +37,6 @@ func (r *Recommender) newsMatchValue(mother, news models.News, motherMap map[str
 	}
 
 	v := titleMatchValue(motherMap, r.recentNews[news.ID])
-	log.Println(v)
 	value += v
 
 	if news.Source != "" && mother.Source == news.Source {
