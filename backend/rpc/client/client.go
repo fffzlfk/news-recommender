@@ -2,8 +2,10 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"news-api/rpc" //对应的生成文件目录
+	"os"
 
 	"google.golang.org/grpc"
 )
@@ -17,7 +19,8 @@ type Client struct {
 
 func NewClient() (*Client, func()) {
 	// 建立连接到gRPC服务
-	conn, err := grpc.Dial("127.0.0.1:50052", grpc.WithInsecure())
+	dsn := fmt.Sprintf("%s:50052", os.Getenv("KEY_WORDS_HOST"))
+	conn, err := grpc.Dial(dsn, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -37,7 +40,7 @@ func NewClient() (*Client, func()) {
 func (c *Client) GetKeywords(title string) map[string]float32 {
 	resp, err := c.gc.GetKeywords(context.Background(), &rpc.GetKeywordsReq{Title: title})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Printf("could not greet: %v\n", err)
 	}
 
 	mp := make(map[string]float32)

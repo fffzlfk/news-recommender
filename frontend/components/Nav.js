@@ -4,13 +4,13 @@ import NextLink from "next/link"
 import { useRouter } from "next/dist/client/router";
 import ThemeToggler from "./ThemeToggler";
 import { categoryMapping } from "../lib/util.ts";
-import API_BASE_URL from "./../pages/_baseurl.json"
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const Nav = ({ auth, category }) => {
     const router = useRouter();
 
     const logout = async () => {
-        await fetch(`${API_BASE_URL}/logout`, {
+        await fetch(`${NEXT_PUBLIC_API_BASE_URL}/logout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',

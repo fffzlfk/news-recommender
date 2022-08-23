@@ -3,9 +3,11 @@ package cron
 import (
 	"log"
 	"net/http"
+	"net/url"
 	"news-api/config"
 	"news-api/database"
 	"news-api/models"
+	"os"
 	"sync"
 	"time"
 
@@ -24,7 +26,15 @@ func addNews() {
 }
 
 func crawlNews() {
-	client, err := api.New(&http.Client{}, apiKey, "https://newsapi.org")
+	proxyUrl, err := url.Parse(os.Getenv("PROXY"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	client, err := api.New(&http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyURL(proxyUrl),
+		},
+	}, apiKey, "https://newsapi.org")
 	if err != nil {
 		log.Println(err)
 	}
@@ -41,11 +51,11 @@ func crawlNews() {
 			}
 			topHeadlines, err := client.TopHeadlines(opts)
 			if err != nil {
+				log.Println(err)
 				return
 			}
 
 			for _, art := range topHeadlines.Articles {
-
 				news := models.News{
 					Title:       art.Title,
 					Description: art.Description,

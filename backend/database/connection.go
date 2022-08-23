@@ -3,25 +3,18 @@ package database
 import (
 	"fmt"
 	"log"
-	"news-api/config"
 	"news-api/models"
+	"os"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func Connect() {
-	c := config.GetDatabaseConfigurations()
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
-		c.Host,
-		c.Port,
-		c.User,
-		c.Password,
-		c.DBName,
-	)
-	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", "root", os.Getenv("MYSQL_ROOT_PASSWORD"), os.Getenv("MYSQL_HOST"), os.Getenv("MYSQL_PORT"), os.Getenv("MYSQL_DATABASE"))
+	conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("could not connect to the database", err)
 	}

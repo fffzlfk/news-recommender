@@ -5,54 +5,52 @@ import { Flex, ListItem, UnorderedList, VStack } from "@chakra-ui/layout";
 import { ButtonGroup, Button } from "@chakra-ui/button";
 import Head from 'next/head';
 
-import API_BASE_URL from './../_baseurl.json'
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { categoryMapping } from "../../lib/util.ts";
-import {Heading, Stack, Checkbox } from "@chakra-ui/react";
+import { Heading, Checkbox } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function Recommend({ isColdStart, category, articles, page, page_num, states }) {
+    const [options, setOptions] = useState([
+        {
+            name: "business",
+            isChecked: false,
+        },
+        {
+            name: "entertainment",
+            isChecked: false,
+        },
+        {
+            name: "health",
+            isChecked: false,
+        },
+        {
+            name: "science",
+            isChecked: false,
+        },
+        {
+            name: "sports",
+            isChecked: false,
+        },
+        {
+            name: "technology",
+            isChecked: false,
+        },
+    ]);
+    const router = useRouter();
     if (isColdStart) {
-        const [items, setItems] = useState([
-            {
-                name: "business",
-                isChecked: false,
-            },
-            {
-                name: "entertainment",
-                isChecked: false,
-            },
-            {
-                name: "health",
-                isChecked: false,
-            },
-            {
-                name: "science",
-                isChecked: false,
-            },
-            {
-                name: "sports",
-                isChecked: false,
-            },
-            {
-                name: "technology",
-                isChecked: false,
-            },
-        ]);
-
-        const router = useRouter();
-
         const handleOnChange = index => {
-            let newItems = [...items];
+            let newItems = [...options];
             newItems[index].isChecked = !newItems[index].isChecked;
-            setItems(newItems);
+            setOptions(newItems);
         }
 
         const submit = async e => {
             e.preventDefault();
 
-            const categorys = items.filter(item => item.isChecked).map(item => item.name);
+            const categorys = options.filter(item => item.isChecked).map(item => item.name);
 
-            await fetch(`${API_BASE_URL}/coldstart`, {
+            await fetch(`${NEXT_PUBLIC_API_BASE_URL}/coldstart`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -72,7 +70,7 @@ export default function Recommend({ isColdStart, category, articles, page, page_
                 <VStack paddingTop={20} spacing={10}>
                     <Heading>选择你感兴趣的新闻类别</Heading>
                     <Flex>
-                        {items.map((item, index) => <Checkbox key={index} isChecked={item.isChecked} onChange={() => handleOnChange(index)}>{categoryMapping(item.name)}</Checkbox>)}
+                        {options.map((item, index) => <Checkbox key={index} isChecked={item.isChecked} onChange={() => handleOnChange(index)}>{categoryMapping(item.name)}</Checkbox>)}
                     </Flex>
                     <Button onClick={e => submit(e)}>提交</Button>
                 </VStack>
@@ -83,7 +81,6 @@ export default function Recommend({ isColdStart, category, articles, page, page_
     const items = articles.map((item, index) => <ListItem paddingTop='3' key={index}><Feed item={item} like={states[index]} isRecommend={category === 'recommend'} /></ListItem>);
     page = parseInt(page, 10);
     page_num = parseInt(page_num, 10);
-    const router = useRouter();
 
     return (
         <Flex direction='column'>
@@ -136,7 +133,7 @@ export async function getServerSideProps(ctx) {
     const category = ctx.params.category;
     const page = ctx.query.page || "1";
 
-    const resp = await fetch(`${API_BASE_URL}/news/${category}?page=${page}`, {
+    const resp = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/news/${category}?page=${page}`, {
         method: 'GET',
         mode: 'cors',
         credentials: 'include',
@@ -152,7 +149,7 @@ export async function getServerSideProps(ctx) {
     }
 
     const fetchLike = async (id) => {
-        return await fetch(`${API_BASE_URL}/like/get?news_id=${id}`, {
+        return await fetch(`${NEXT_PUBLIC_API_BASE_URL}/like/get?news_id=${id}`, {
             method: 'GET',
             mode: 'cors',
             credentials: 'include',

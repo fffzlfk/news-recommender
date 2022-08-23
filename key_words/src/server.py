@@ -6,6 +6,7 @@ import keywords_pb2
 import keywords_pb2_grpc
 import json
 import codecs
+import logging
 
 
 # 实现 proto 文件中定义的 GreeterServicer
@@ -22,22 +23,20 @@ def get_keywords(text):
     tr4w.analyze(text=text, lower=True, window=2)
 
     res = []
-    print("关键词：")
     for item in tr4w.get_keywords(5, word_min_len=2):
-        print(item.word, item.weight)
         res.append(keywords_pb2.Item(word=item.word, weight=item.weight))
 
     return res
 
 
 def serve():
+    logging.basicConfig(level=logging.DEBUG)
     # 启动 rpc 服务
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     keywords_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port("[::]:50052")
     server.start()
-    print("INFO: server started")
-
+    logging.info("server started")
     try:
         while True:
             time.sleep(60 * 60 * 24)  # one day in seconds

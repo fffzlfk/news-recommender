@@ -1,6 +1,10 @@
 package cron
 
-import "github.com/robfig/cron"
+import (
+	"log"
+
+	"github.com/robfig/cron"
+)
 
 func Start() {
 	c := cron.New()
@@ -8,8 +12,12 @@ func Start() {
 	addNews()
 	deleteNews()
 
-	c.AddFunc("@hourly", addNews)
-	c.AddFunc("@midnight", deleteNews)
+	if err := c.AddFunc("@hourly", addNews); err != nil {
+		log.Println(err)
+	}
+	if err := c.AddFunc("@midnight", deleteNews); err != nil {
+		log.Println(err)
+	}
 
 	c.Start()
 }

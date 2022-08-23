@@ -7,16 +7,7 @@ import (
 )
 
 type configurations struct {
-	Database databaseConfigurations `mapstructure:"pgsql"`
-	Numbers  numbersConfigurations  `mapstructure:"numbers"`
-}
-
-type databaseConfigurations struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	DBName   string
+	Numbers numbersConfigurations `mapstructure:"numbers"`
 }
 
 type numbersConfigurations struct {
@@ -38,10 +29,6 @@ func Init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func GetDatabaseConfigurations() databaseConfigurations {
-	return conf.Database
 }
 
 func GetPageSize() int {

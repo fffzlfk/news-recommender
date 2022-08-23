@@ -2,13 +2,6 @@ app_name = "news-api"
 
 log_lelvel = "DEBUG"
 
-[pgsql]
-host = "localhost"
-port = 5432
-user = "postgres"
-password = "postgres"
-dbname = "news_recommend"
-
 [numbers]
 page_size = 10
 max_news_num_of_db = 300

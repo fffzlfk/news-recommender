@@ -4,7 +4,7 @@ const Entry = ({ category, imageSrc }) => {
     const { colorMode } = useColorMode();
     return (
         <Box maxW='20' display='flex' flexDir='column' alignItems='center'>
-            <Image src={imageSrc} filter={colorMode === 'dark' ? 'invert(1)' : 'none'} />
+            <Image src={imageSrc} filter={colorMode === 'dark' ? 'invert(1)' : 'none'} alt="entry"/>
             <Text fontWeight='extrabold'>{category}</Text>
         </Box>
     )
