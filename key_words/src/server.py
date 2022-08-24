@@ -1,11 +1,9 @@
-from textrank4zh import TextRank4Keyword, TextRank4Sentence
+from textrank4zh import TextRank4Keyword
 from concurrent import futures
 import time
 import grpc
 import keywords_pb2
 import keywords_pb2_grpc
-import json
-import codecs
 import logging
 
 
