@@ -22,4 +22,4 @@ docker compose up
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/fffzlfk/news-recommender/blob/main/LICENSE)
