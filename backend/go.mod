@@ -3,7 +3,7 @@ module news-api
 go 1.17
 
 require (
-	github.com/gofiber/fiber/v2 v2.37.1
+	github.com/gofiber/fiber/v2 v2.38.1
 	github.com/robtec/newsapi v0.0.0-20180922142248-e986ded8a669
 	github.com/spf13/viper v1.13.0
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8
