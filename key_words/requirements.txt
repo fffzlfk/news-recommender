@@ -1,4 +1,4 @@
 textrank4zh==0.3
-grpcio==1.49.1
+grpcio==1.50.0
 grpcio-tools==1.49.1
 scipy==1.9.3
