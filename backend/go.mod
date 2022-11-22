@@ -3,7 +3,7 @@ module news-api
 go 1.17
 
 require (
-	github.com/gofiber/fiber/v2 v2.39.0
+	github.com/gofiber/fiber/v2 v2.40.0
 	github.com/robtec/newsapi v0.0.0-20180922142248-e986ded8a669
 	github.com/spf13/viper v1.14.0
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8
@@ -46,7 +46,7 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
-	github.com/valyala/fasthttp v1.40.0 // indirect
+	github.com/valyala/fasthttp v1.41.0 // indirect
 	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b // indirect
 	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
 	google.golang.org/genproto v0.0.0-20221024183307-1bc688fe9f3e // indirect
