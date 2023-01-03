@@ -9,14 +9,14 @@ require (
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
-	gorm.io/driver/mysql v1.4.4
+	gorm.io/driver/mysql v1.4.5
 	gorm.io/gorm v1.24.3
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
