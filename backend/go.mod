@@ -7,7 +7,7 @@ require (
 	github.com/robtec/newsapi v0.0.0-20180922142248-e986ded8a669
 	github.com/spf13/viper v1.15.0
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8
-	google.golang.org/grpc v1.52.3
+	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.6
 	gorm.io/gorm v1.24.5
@@ -37,7 +37,7 @@ require (
 	github.com/tinylib/msgp v1.1.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/text v0.6.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
@@ -50,8 +50,8 @@ require (
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/valyala/fasthttp v1.44.0 // indirect
-	golang.org/x/net v0.4.0 // indirect
-	golang.org/x/sys v0.3.0 // indirect
-	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
+	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
+	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 )
