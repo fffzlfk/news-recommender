@@ -6,7 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/robtec/newsapi v0.0.0-20180922142248-e986ded8a669
 	github.com/spf13/viper v1.15.0
-	golang.org/x/crypto v0.14.0
+	golang.org/x/crypto v0.25.0
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.7
@@ -33,7 +33,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/text v0.16.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
@@ -46,8 +46,8 @@ require (
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 )
